@@ -6,27 +6,96 @@
         "name": "地下室顶板屋面（非上人）",
         "reference": "参考15ZJ001-屋-1",
         "layers": [
-          {"order": 1, "material": "C20细石混凝土保护层", "thickness": "40", "note": "配筋φ6@200双向，随捣随抹平"},
-          {"order": 2, "material": "隔离层（无纺布或塑料膜）", "thickness": "-", "note": ""},
-          {"order": 3, "material": "SBS改性沥青防水卷材", "thickness": "4+3", "note": "Ⅱ型，双层做法"},
-          {"order": 4, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 5, "material": "轻集料混凝土找坡层", "thickness": "最薄30", "note": "LC5.0轻集料混凝土，坡度2%"},
-          {"order": 6, "material": "钢筋混凝土顶板", "thickness": "结构定", "note": "结构专业确定"}
-        ]
+          {
+            "order": 1,
+            "material": "C20细石混凝土保护层",
+            "thickness": "40",
+            "note": "配筋φ6@200双向，随捣随抹平"
+          },
+          {
+            "order": 2,
+            "material": "隔离层（无纺布或塑料膜）",
+            "thickness": "-",
+            "note": ""
+          },
+          {
+            "order": 3,
+            "material": "SBS改性沥青防水卷材",
+            "thickness": "4+3",
+            "note": "Ⅱ型，双层做法"
+          },
+          {
+            "order": 4,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 5,
+            "material": "轻集料混凝土找坡层",
+            "thickness": "最薄30",
+            "note": "LC5.0轻集料混凝土，坡度2%"
+          },
+          {
+            "order": 6,
+            "material": "钢筋混凝土顶板",
+            "thickness": "结构定",
+            "note": "结构专业确定"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-屋-1"
       },
       {
         "id": "WM-B1-002",
         "name": "地下室顶板屋面（上人）",
         "reference": "参考15ZJ001-屋-5",
         "layers": [
-          {"order": 1, "material": "防滑地砖铺面", "thickness": "8~10", "note": "专用粘结剂粘贴，填缝剂填缝"},
-          {"order": 2, "material": "C20细石混凝土保护层", "thickness": "40", "note": "配筋φ6@200双向"},
-          {"order": 3, "material": "隔离层（无纺布）", "thickness": "-", "note": ""},
-          {"order": 4, "material": "SBS改性沥青防水卷材", "thickness": "3+3", "note": "Ⅱ型，双层做法"},
-          {"order": 5, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 6, "material": "轻集料混凝土找坡层", "thickness": "最薄30", "note": "LC5.0，坡度2%"},
-          {"order": 7, "material": "钢筋混凝土顶板", "thickness": "结构定", "note": "结构专业确定"}
-        ]
+          {
+            "order": 1,
+            "material": "防滑地砖铺面",
+            "thickness": "8~10",
+            "note": "专用粘结剂粘贴，填缝剂填缝"
+          },
+          {
+            "order": 2,
+            "material": "C20细石混凝土保护层",
+            "thickness": "40",
+            "note": "配筋φ6@200双向"
+          },
+          {
+            "order": 3,
+            "material": "隔离层（无纺布）",
+            "thickness": "-",
+            "note": ""
+          },
+          {
+            "order": 4,
+            "material": "SBS改性沥青防水卷材",
+            "thickness": "3+3",
+            "note": "Ⅱ型，双层做法"
+          },
+          {
+            "order": 5,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 6,
+            "material": "轻集料混凝土找坡层",
+            "thickness": "最薄30",
+            "note": "LC5.0，坡度2%"
+          },
+          {
+            "order": 7,
+            "material": "钢筋混凝土顶板",
+            "thickness": "结构定",
+            "note": "结构专业确定"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-屋-5"
       }
     ],
     "外墙做法": [
@@ -35,23 +104,72 @@
         "name": "地下室侧墙防水（外防外贴）",
         "reference": "参考15ZJ001-墙-1",
         "layers": [
-          {"order": 1, "material": "回填土", "thickness": "-", "note": "分层夯实"},
-          {"order": 2, "material": "保护砖墙", "thickness": "120", "note": "MU10砖，M5水泥砂浆"},
-          {"order": 3, "material": "SBS改性沥青防水卷材", "thickness": "4+3", "note": "Ⅱ型"},
-          {"order": 4, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 5, "material": "钢筋混凝土侧墙", "thickness": "结构定", "note": "抗渗等级≥P6"}
-        ]
+          {
+            "order": 1,
+            "material": "回填土",
+            "thickness": "-",
+            "note": "分层夯实"
+          },
+          {
+            "order": 2,
+            "material": "保护砖墙",
+            "thickness": "120",
+            "note": "MU10砖，M5水泥砂浆"
+          },
+          {
+            "order": 3,
+            "material": "SBS改性沥青防水卷材",
+            "thickness": "4+3",
+            "note": "Ⅱ型"
+          },
+          {
+            "order": 4,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 5,
+            "material": "钢筋混凝土侧墙",
+            "thickness": "结构定",
+            "note": "抗渗等级≥P6"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-墙-1"
       },
       {
         "id": "WQ-B1-002",
         "name": "地下室侧墙防水（外防内贴）",
         "reference": "参考15ZJ001-墙-2",
         "layers": [
-          {"order": 1, "material": "围护结构", "thickness": "-", "note": "如地下连续墙等"},
-          {"order": 2, "material": "SBS改性沥青防水卷材", "thickness": "4+3", "note": "Ⅱ型"},
-          {"order": 3, "material": "保护层", "thickness": "-", "note": ""},
-          {"order": 4, "material": "钢筋混凝土内衬墙", "thickness": "结构定", "note": "抗渗等级≥P6"}
-        ]
+          {
+            "order": 1,
+            "material": "围护结构",
+            "thickness": "-",
+            "note": "如地下连续墙等"
+          },
+          {
+            "order": 2,
+            "material": "SBS改性沥青防水卷材",
+            "thickness": "4+3",
+            "note": "Ⅱ型"
+          },
+          {
+            "order": 3,
+            "material": "保护层",
+            "thickness": "-",
+            "note": ""
+          },
+          {
+            "order": 4,
+            "material": "钢筋混凝土内衬墙",
+            "thickness": "结构定",
+            "note": "抗渗等级≥P6"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-墙-2"
       }
     ],
     "室内地面做法": [
@@ -60,23 +178,72 @@
         "name": "地下室水泥砂浆地面",
         "reference": "参考15ZJ001-地-1",
         "layers": [
-          {"order": 1, "material": "水泥砂浆面层", "thickness": "20", "note": "1:2水泥砂浆，铁抹压光"},
-          {"order": 2, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 3, "material": "C15混凝土垫层", "thickness": "100", "note": "随捣随抹平"},
-          {"order": 4, "material": "碎石灌M2.5砂浆垫层", "thickness": "150", "note": "夯实"},
-          {"order": 5, "material": "素土夯实", "thickness": "-", "note": "压实系数≥0.94"}
-        ]
+          {
+            "order": 1,
+            "material": "水泥砂浆面层",
+            "thickness": "20",
+            "note": "1:2水泥砂浆，铁抹压光"
+          },
+          {
+            "order": 2,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 3,
+            "material": "C15混凝土垫层",
+            "thickness": "100",
+            "note": "随捣随抹平"
+          },
+          {
+            "order": 4,
+            "material": "碎石灌M2.5砂浆垫层",
+            "thickness": "150",
+            "note": "夯实"
+          },
+          {
+            "order": 5,
+            "material": "素土夯实",
+            "thickness": "-",
+            "note": "压实系数≥0.94"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-地-1"
       },
       {
         "id": "DM-B1-002",
         "name": "地下室细石混凝土地面",
         "reference": "参考15ZJ001-地-3",
         "layers": [
-          {"order": 1, "material": "C20细石混凝土面层", "thickness": "40", "note": "随捣随抹平，表面撒1:1水泥砂子压实"},
-          {"order": 2, "material": "C15混凝土垫层", "thickness": "100", "note": ""},
-          {"order": 3, "material": "碎石灌M2.5砂浆", "thickness": "150", "note": "夯实"},
-          {"order": 4, "material": "素土夯实", "thickness": "-", "note": "压实系数≥0.94"}
-        ]
+          {
+            "order": 1,
+            "material": "C20细石混凝土面层",
+            "thickness": "40",
+            "note": "随捣随抹平，表面撒1:1水泥砂子压实"
+          },
+          {
+            "order": 2,
+            "material": "C15混凝土垫层",
+            "thickness": "100",
+            "note": ""
+          },
+          {
+            "order": 3,
+            "material": "碎石灌M2.5砂浆",
+            "thickness": "150",
+            "note": "夯实"
+          },
+          {
+            "order": 4,
+            "material": "素土夯实",
+            "thickness": "-",
+            "note": "压实系数≥0.94"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-地-3"
       }
     ],
     "室内墙面做法": [
@@ -85,11 +252,33 @@
         "name": "地下室水泥砂浆墙面",
         "reference": "参考15ZJ001-内墙-1",
         "layers": [
-          {"order": 1, "material": "白色防霉涂料", "thickness": "-", "note": "一遍底涂，两遍面涂"},
-          {"order": 2, "material": "水泥砂浆抹面", "thickness": "15", "note": "1:2.5水泥砂浆"},
-          {"order": 3, "material": "混合砂浆打底", "thickness": "12", "note": "1:1:6混合砂浆"},
-          {"order": 4, "material": "混凝土墙面界面处理", "thickness": "-", "note": "凿毛或界面剂处理"}
-        ]
+          {
+            "order": 1,
+            "material": "白色防霉涂料",
+            "thickness": "-",
+            "note": "一遍底涂，两遍面涂"
+          },
+          {
+            "order": 2,
+            "material": "水泥砂浆抹面",
+            "thickness": "15",
+            "note": "1:2.5水泥砂浆"
+          },
+          {
+            "order": 3,
+            "material": "混合砂浆打底",
+            "thickness": "12",
+            "note": "1:1:6混合砂浆"
+          },
+          {
+            "order": 4,
+            "material": "混凝土墙面界面处理",
+            "thickness": "-",
+            "note": "凿毛或界面剂处理"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-内墙-1"
       }
     ],
     "室内天花做法": [
@@ -98,11 +287,33 @@
         "name": "地下室顶棚（板底抹灰）",
         "reference": "参考15ZJ001-顶-1",
         "layers": [
-          {"order": 1, "material": "白色防霉涂料", "thickness": "-", "note": "一遍底涂，两遍面涂"},
-          {"order": 2, "material": "混合砂浆抹面", "thickness": "5", "note": "1:0.3:2.5混合砂浆"},
-          {"order": 3, "material": "混合砂浆打底", "thickness": "7", "note": "1:1:6混合砂浆"},
-          {"order": 4, "material": "钢筋混凝土板底", "thickness": "结构定", "note": "板底清理干净"}
-        ]
+          {
+            "order": 1,
+            "material": "白色防霉涂料",
+            "thickness": "-",
+            "note": "一遍底涂，两遍面涂"
+          },
+          {
+            "order": 2,
+            "material": "混合砂浆抹面",
+            "thickness": "5",
+            "note": "1:0.3:2.5混合砂浆"
+          },
+          {
+            "order": 3,
+            "material": "混合砂浆打底",
+            "thickness": "7",
+            "note": "1:1:6混合砂浆"
+          },
+          {
+            "order": 4,
+            "material": "钢筋混凝土板底",
+            "thickness": "结构定",
+            "note": "板底清理干净"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-顶-1"
       }
     ]
   },
@@ -113,28 +324,102 @@
         "name": "上人平屋面（有保温）",
         "reference": "参考15ZJ001-屋-10",
         "layers": [
-          {"order": 1, "material": "防滑地砖铺面", "thickness": "8~10", "note": "专用粘结剂粘贴"},
-          {"order": 2, "material": "C20细石混凝土保护层", "thickness": "40", "note": "配筋φ6@200双向"},
-          {"order": 3, "material": "隔离层（无纺布）", "thickness": "-", "note": ""},
-          {"order": 4, "material": "SBS改性沥青防水卷材", "thickness": "3+3", "note": "Ⅱ型"},
-          {"order": 5, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 6, "material": "挤塑聚苯板保温层", "thickness": "按设计", "note": "XPS板，密度≥35kg/m³"},
-          {"order": 7, "material": "轻集料混凝土找坡层", "thickness": "最薄30", "note": "LC5.0，坡度2%"},
-          {"order": 8, "material": "钢筋混凝土屋面板", "thickness": "结构定", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "防滑地砖铺面",
+            "thickness": "8~10",
+            "note": "专用粘结剂粘贴"
+          },
+          {
+            "order": 2,
+            "material": "C20细石混凝土保护层",
+            "thickness": "40",
+            "note": "配筋φ6@200双向"
+          },
+          {
+            "order": 3,
+            "material": "隔离层（无纺布）",
+            "thickness": "-",
+            "note": ""
+          },
+          {
+            "order": 4,
+            "material": "SBS改性沥青防水卷材",
+            "thickness": "3+3",
+            "note": "Ⅱ型"
+          },
+          {
+            "order": 5,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 6,
+            "material": "挤塑聚苯板保温层",
+            "thickness": "按设计",
+            "note": "XPS板，密度≥35kg/m³"
+          },
+          {
+            "order": 7,
+            "material": "轻集料混凝土找坡层",
+            "thickness": "最薄30",
+            "note": "LC5.0，坡度2%"
+          },
+          {
+            "order": 8,
+            "material": "钢筋混凝土屋面板",
+            "thickness": "结构定",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-屋-10"
       },
       {
         "id": "WM-ZZ-002",
         "name": "非上人平屋面（有保温）",
         "reference": "参考15ZJ001-屋-8",
         "layers": [
-          {"order": 1, "material": "浅色涂料保护层", "thickness": "-", "note": "或撒绿豆砂保护"},
-          {"order": 2, "material": "SBS改性沥青防水卷材", "thickness": "3+3", "note": "Ⅱ型，带页岩片保护"},
-          {"order": 3, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 4, "material": "挤塑聚苯板保温层", "thickness": "按设计", "note": "XPS板"},
-          {"order": 5, "material": "轻集料混凝土找坡层", "thickness": "最薄30", "note": "LC5.0，坡度2%"},
-          {"order": 6, "material": "钢筋混凝土屋面板", "thickness": "结构定", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "浅色涂料保护层",
+            "thickness": "-",
+            "note": "或撒绿豆砂保护"
+          },
+          {
+            "order": 2,
+            "material": "SBS改性沥青防水卷材",
+            "thickness": "3+3",
+            "note": "Ⅱ型，带页岩片保护"
+          },
+          {
+            "order": 3,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 4,
+            "material": "挤塑聚苯板保温层",
+            "thickness": "按设计",
+            "note": "XPS板"
+          },
+          {
+            "order": 5,
+            "material": "轻集料混凝土找坡层",
+            "thickness": "最薄30",
+            "note": "LC5.0，坡度2%"
+          },
+          {
+            "order": 6,
+            "material": "钢筋混凝土屋面板",
+            "thickness": "结构定",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-屋-8"
       }
     ],
     "外墙做法": [
@@ -143,24 +428,78 @@
         "name": "外墙外保温（涂料饰面）",
         "reference": "参考15ZJ001-外墙-1",
         "layers": [
-          {"order": 1, "material": "外墙涂料", "thickness": "-", "note": "一底两面"},
-          {"order": 2, "material": "抗裂砂浆复合耐碱网格布", "thickness": "5", "note": "压入网格布"},
-          {"order": 3, "material": "膨胀聚苯板保温层", "thickness": "按设计", "note": "EPS板，粘结+锚固"},
-          {"order": 4, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 5, "material": "基层墙体", "thickness": "结构定", "note": "砌体墙或混凝土墙"}
-        ]
+          {
+            "order": 1,
+            "material": "外墙涂料",
+            "thickness": "-",
+            "note": "一底两面"
+          },
+          {
+            "order": 2,
+            "material": "抗裂砂浆复合耐碱网格布",
+            "thickness": "5",
+            "note": "压入网格布"
+          },
+          {
+            "order": 3,
+            "material": "膨胀聚苯板保温层",
+            "thickness": "按设计",
+            "note": "EPS板，粘结+锚固"
+          },
+          {
+            "order": 4,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 5,
+            "material": "基层墙体",
+            "thickness": "结构定",
+            "note": "砌体墙或混凝土墙"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-外墙-1"
       },
       {
         "id": "WQ-ZZ-002",
         "name": "外墙外保温（面砖饰面）",
         "reference": "参考15ZJ001-外墙-3",
         "layers": [
-          {"order": 1, "material": "外墙饰面砖", "thickness": "5~8", "note": "专用粘结剂+勾缝剂"},
-          {"order": 2, "material": "抗裂砂浆复合热镀锌钢丝网", "thickness": "8", "note": "锚栓固定"},
-          {"order": 3, "material": "膨胀聚苯板保温层", "thickness": "按设计", "note": "EPS板，粘结+锚固"},
-          {"order": 4, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 5, "material": "基层墙体", "thickness": "结构定", "note": "砌体墙或混凝土墙"}
-        ]
+          {
+            "order": 1,
+            "material": "外墙饰面砖",
+            "thickness": "5~8",
+            "note": "专用粘结剂+勾缝剂"
+          },
+          {
+            "order": 2,
+            "material": "抗裂砂浆复合热镀锌钢丝网",
+            "thickness": "8",
+            "note": "锚栓固定"
+          },
+          {
+            "order": 3,
+            "material": "膨胀聚苯板保温层",
+            "thickness": "按设计",
+            "note": "EPS板，粘结+锚固"
+          },
+          {
+            "order": 4,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 5,
+            "material": "基层墙体",
+            "thickness": "结构定",
+            "note": "砌体墙或混凝土墙"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-外墙-3"
       }
     ],
     "室内地面做法": [
@@ -169,24 +508,78 @@
         "name": "客厅/卧室木地板地面",
         "reference": "参考15ZJ001-楼-12",
         "layers": [
-          {"order": 1, "material": "强化复合木地板", "thickness": "8~12", "note": "企口拼接，留伸缩缝"},
-          {"order": 2, "material": "防潮垫", "thickness": "2", "note": "PE发泡材料"},
-          {"order": 3, "material": "C20细石混凝土找平层", "thickness": "40", "note": "随捣随抹平"},
-          {"order": 4, "material": "挤塑聚苯板保温层（如需要）", "thickness": "20", "note": "XPS板"},
-          {"order": 5, "material": "钢筋混凝土楼板", "thickness": "结构定", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "强化复合木地板",
+            "thickness": "8~12",
+            "note": "企口拼接，留伸缩缝"
+          },
+          {
+            "order": 2,
+            "material": "防潮垫",
+            "thickness": "2",
+            "note": "PE发泡材料"
+          },
+          {
+            "order": 3,
+            "material": "C20细石混凝土找平层",
+            "thickness": "40",
+            "note": "随捣随抹平"
+          },
+          {
+            "order": 4,
+            "material": "挤塑聚苯板保温层（如需要）",
+            "thickness": "20",
+            "note": "XPS板"
+          },
+          {
+            "order": 5,
+            "material": "钢筋混凝土楼板",
+            "thickness": "结构定",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-楼-12"
       },
       {
         "id": "DM-ZZ-002",
         "name": "厨房/卫生间防滑地砖地面",
         "reference": "参考15ZJ001-楼-20",
         "layers": [
-          {"order": 1, "material": "防滑地砖", "thickness": "8~10", "note": "专用粘结剂粘贴"},
-          {"order": 2, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3干硬性水泥砂浆"},
-          {"order": 3, "material": "JS防水涂料", "thickness": "1.5", "note": "Ⅱ型，四周翻起300高"},
-          {"order": 4, "material": "C20细石混凝土找平层", "thickness": "40", "note": "随捣随抹平"},
-          {"order": 5, "material": "钢筋混凝土楼板", "thickness": "结构定", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "防滑地砖",
+            "thickness": "8~10",
+            "note": "专用粘结剂粘贴"
+          },
+          {
+            "order": 2,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3干硬性水泥砂浆"
+          },
+          {
+            "order": 3,
+            "material": "JS防水涂料",
+            "thickness": "1.5",
+            "note": "Ⅱ型，四周翻起300高"
+          },
+          {
+            "order": 4,
+            "material": "C20细石混凝土找平层",
+            "thickness": "40",
+            "note": "随捣随抹平"
+          },
+          {
+            "order": 5,
+            "material": "钢筋混凝土楼板",
+            "thickness": "结构定",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-楼-20"
       }
     ],
     "室内墙面做法": [
@@ -195,24 +588,78 @@
         "name": "客厅/卧室乳胶漆墙面",
         "reference": "参考15ZJ001-内墙-5",
         "layers": [
-          {"order": 1, "material": "乳胶漆", "thickness": "-", "note": "一遍底涂，两遍面涂"},
-          {"order": 2, "material": "满刮腻子", "thickness": "2~3", "note": "两遍找平打磨"},
-          {"order": 3, "material": "混合砂浆抹面", "thickness": "5", "note": "1:0.3:2.5混合砂浆"},
-          {"order": 4, "material": "混合砂浆打底", "thickness": "12", "note": "1:1:6混合砂浆"},
-          {"order": 5, "material": "基层墙体", "thickness": "-", "note": "界面处理"}
-        ]
+          {
+            "order": 1,
+            "material": "乳胶漆",
+            "thickness": "-",
+            "note": "一遍底涂，两遍面涂"
+          },
+          {
+            "order": 2,
+            "material": "满刮腻子",
+            "thickness": "2~3",
+            "note": "两遍找平打磨"
+          },
+          {
+            "order": 3,
+            "material": "混合砂浆抹面",
+            "thickness": "5",
+            "note": "1:0.3:2.5混合砂浆"
+          },
+          {
+            "order": 4,
+            "material": "混合砂浆打底",
+            "thickness": "12",
+            "note": "1:1:6混合砂浆"
+          },
+          {
+            "order": 5,
+            "material": "基层墙体",
+            "thickness": "-",
+            "note": "界面处理"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-内墙-5"
       },
       {
         "id": "QM-ZZ-002",
         "name": "厨房/卫生间瓷砖墙面",
         "reference": "参考15ZJ001-内墙-8",
         "layers": [
-          {"order": 1, "material": "墙面瓷砖", "thickness": "5~8", "note": "专用粘结剂，到顶"},
-          {"order": 2, "material": "水泥砂浆找平层", "thickness": "12", "note": "1:3水泥砂浆"},
-          {"order": 3, "material": "JS防水涂料", "thickness": "1.2", "note": "墙面满涂"},
-          {"order": 4, "material": "混合砂浆打底", "thickness": "10", "note": "1:1:6混合砂浆"},
-          {"order": 5, "material": "基层墙体", "thickness": "-", "note": "界面处理"}
-        ]
+          {
+            "order": 1,
+            "material": "墙面瓷砖",
+            "thickness": "5~8",
+            "note": "专用粘结剂，到顶"
+          },
+          {
+            "order": 2,
+            "material": "水泥砂浆找平层",
+            "thickness": "12",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 3,
+            "material": "JS防水涂料",
+            "thickness": "1.2",
+            "note": "墙面满涂"
+          },
+          {
+            "order": 4,
+            "material": "混合砂浆打底",
+            "thickness": "10",
+            "note": "1:1:6混合砂浆"
+          },
+          {
+            "order": 5,
+            "material": "基层墙体",
+            "thickness": "-",
+            "note": "界面处理"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-内墙-8"
       }
     ],
     "室内天花做法": [
@@ -221,23 +668,72 @@
         "name": "板底乳胶漆天花",
         "reference": "参考15ZJ001-顶-3",
         "layers": [
-          {"order": 1, "material": "乳胶漆", "thickness": "-", "note": "一遍底涂，两遍面涂"},
-          {"order": 2, "material": "满刮腻子", "thickness": "2~3", "note": "两遍找平打磨"},
-          {"order": 3, "material": "混合砂浆抹面", "thickness": "5", "note": "1:0.3:2.5混合砂浆"},
-          {"order": 4, "material": "混合砂浆打底", "thickness": "7", "note": "1:1:6混合砂浆"},
-          {"order": 5, "material": "钢筋混凝土板底", "thickness": "结构定", "note": "板底清理干净"}
-        ]
+          {
+            "order": 1,
+            "material": "乳胶漆",
+            "thickness": "-",
+            "note": "一遍底涂，两遍面涂"
+          },
+          {
+            "order": 2,
+            "material": "满刮腻子",
+            "thickness": "2~3",
+            "note": "两遍找平打磨"
+          },
+          {
+            "order": 3,
+            "material": "混合砂浆抹面",
+            "thickness": "5",
+            "note": "1:0.3:2.5混合砂浆"
+          },
+          {
+            "order": 4,
+            "material": "混合砂浆打底",
+            "thickness": "7",
+            "note": "1:1:6混合砂浆"
+          },
+          {
+            "order": 5,
+            "material": "钢筋混凝土板底",
+            "thickness": "结构定",
+            "note": "板底清理干净"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-顶-3"
       },
       {
         "id": "TH-ZZ-002",
         "name": "轻钢龙骨吊顶天花",
         "reference": "参考15ZJ001-顶-10",
         "layers": [
-          {"order": 1, "material": "纸面石膏板", "thickness": "9.5", "note": "双层9.5mm，错缝安装"},
-          {"order": 2, "material": "轻钢龙骨", "thickness": "-", "note": "U50系列，间距400mm"},
-          {"order": 3, "material": "吊杆", "thickness": "-", "note": "φ8钢筋吊杆，间距1200mm"},
-          {"order": 4, "material": "钢筋混凝土板底", "thickness": "结构定", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "纸面石膏板",
+            "thickness": "9.5",
+            "note": "双层9.5mm，错缝安装"
+          },
+          {
+            "order": 2,
+            "material": "轻钢龙骨",
+            "thickness": "-",
+            "note": "U50系列，间距400mm"
+          },
+          {
+            "order": 3,
+            "material": "吊杆",
+            "thickness": "-",
+            "note": "φ8钢筋吊杆，间距1200mm"
+          },
+          {
+            "order": 4,
+            "material": "钢筋混凝土板底",
+            "thickness": "结构定",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-顶-10"
       }
     ]
   },
@@ -248,32 +744,126 @@
         "name": "上人平屋面（有保温）",
         "reference": "参考15ZJ001-屋-10",
         "layers": [
-          {"order": 1, "material": "防滑地砖铺面", "thickness": "8~10", "note": "专用粘结剂粘贴"},
-          {"order": 2, "material": "C20细石混凝土保护层", "thickness": "40", "note": "配筋φ6@200双向"},
-          {"order": 3, "material": "隔离层（无纺布）", "thickness": "-", "note": ""},
-          {"order": 4, "material": "SBS改性沥青防水卷材", "thickness": "3+3", "note": "Ⅱ型"},
-          {"order": 5, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 6, "material": "挤塑聚苯板保温层", "thickness": "按设计", "note": "XPS板"},
-          {"order": 7, "material": "轻集料混凝土找坡层", "thickness": "最薄30", "note": "LC5.0，坡度2%"},
-          {"order": 8, "material": "钢筋混凝土屋面板", "thickness": "结构定", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "防滑地砖铺面",
+            "thickness": "8~10",
+            "note": "专用粘结剂粘贴"
+          },
+          {
+            "order": 2,
+            "material": "C20细石混凝土保护层",
+            "thickness": "40",
+            "note": "配筋φ6@200双向"
+          },
+          {
+            "order": 3,
+            "material": "隔离层（无纺布）",
+            "thickness": "-",
+            "note": ""
+          },
+          {
+            "order": 4,
+            "material": "SBS改性沥青防水卷材",
+            "thickness": "3+3",
+            "note": "Ⅱ型"
+          },
+          {
+            "order": 5,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 6,
+            "material": "挤塑聚苯板保温层",
+            "thickness": "按设计",
+            "note": "XPS板"
+          },
+          {
+            "order": 7,
+            "material": "轻集料混凝土找坡层",
+            "thickness": "最薄30",
+            "note": "LC5.0，坡度2%"
+          },
+          {
+            "order": 8,
+            "material": "钢筋混凝土屋面板",
+            "thickness": "结构定",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-屋-10"
       },
       {
         "id": "WM-GJ-002",
         "name": "种植屋面",
         "reference": "参考15ZJ001-屋-18",
         "layers": [
-          {"order": 1, "material": "种植土", "thickness": "按设计", "note": "根据植物种类确定"},
-          {"order": 2, "material": "过滤层（无纺布）", "thickness": "-", "note": "≥200g/m²"},
-          {"order": 3, "material": "排水板", "thickness": "20~30", "note": "HDPE排水板"},
-          {"order": 4, "material": "C20细石混凝土保护层", "thickness": "40", "note": "配筋"},
-          {"order": 5, "material": "耐根穿刺防水卷材", "thickness": "4", "note": "铜离子或化学阻根型"},
-          {"order": 6, "material": "普通SBS防水卷材", "thickness": "3", "note": "Ⅱ型"},
-          {"order": 7, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 8, "material": "挤塑聚苯板保温层", "thickness": "按设计", "note": "XPS板，抗压≥250kPa"},
-          {"order": 9, "material": "轻集料混凝土找坡层", "thickness": "最薄30", "note": "坡度2~5%"},
-          {"order": 10, "material": "钢筋混凝土屋面板", "thickness": "结构定", "note": "抗渗等级≥P6"}
-        ]
+          {
+            "order": 1,
+            "material": "种植土",
+            "thickness": "按设计",
+            "note": "根据植物种类确定"
+          },
+          {
+            "order": 2,
+            "material": "过滤层（无纺布）",
+            "thickness": "-",
+            "note": "≥200g/m²"
+          },
+          {
+            "order": 3,
+            "material": "排水板",
+            "thickness": "20~30",
+            "note": "HDPE排水板"
+          },
+          {
+            "order": 4,
+            "material": "C20细石混凝土保护层",
+            "thickness": "40",
+            "note": "配筋"
+          },
+          {
+            "order": 5,
+            "material": "耐根穿刺防水卷材",
+            "thickness": "4",
+            "note": "铜离子或化学阻根型"
+          },
+          {
+            "order": 6,
+            "material": "普通SBS防水卷材",
+            "thickness": "3",
+            "note": "Ⅱ型"
+          },
+          {
+            "order": 7,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 8,
+            "material": "挤塑聚苯板保温层",
+            "thickness": "按设计",
+            "note": "XPS板，抗压≥250kPa"
+          },
+          {
+            "order": 9,
+            "material": "轻集料混凝土找坡层",
+            "thickness": "最薄30",
+            "note": "坡度2~5%"
+          },
+          {
+            "order": 10,
+            "material": "钢筋混凝土屋面板",
+            "thickness": "结构定",
+            "note": "抗渗等级≥P6"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-屋-18"
       }
     ],
     "外墙做法": [
@@ -282,23 +872,72 @@
         "name": "幕墙（玻璃幕墙）",
         "reference": "参考15ZJ001-外墙-20",
         "layers": [
-          {"order": 1, "material": "中空Low-E玻璃", "thickness": "6+12A+6", "note": "钢化，夹胶可选"},
-          {"order": 2, "material": "铝合金立柱/横梁", "thickness": "-", "note": "断热型材"},
-          {"order": 3, "material": "岩棉保温层", "thickness": "按设计", "note": "容重≥100kg/m³，填于龙骨间"},
-          {"order": 4, "material": "防火封堵", "thickness": "-", "note": "层间防火封堵"}
-        ]
+          {
+            "order": 1,
+            "material": "中空Low-E玻璃",
+            "thickness": "6+12A+6",
+            "note": "钢化，夹胶可选"
+          },
+          {
+            "order": 2,
+            "material": "铝合金立柱/横梁",
+            "thickness": "-",
+            "note": "断热型材"
+          },
+          {
+            "order": 3,
+            "material": "岩棉保温层",
+            "thickness": "按设计",
+            "note": "容重≥100kg/m³，填于龙骨间"
+          },
+          {
+            "order": 4,
+            "material": "防火封堵",
+            "thickness": "-",
+            "note": "层间防火封堵"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-外墙-20"
       },
       {
         "id": "WQ-GJ-002",
         "name": "外墙外保温（涂料饰面-公建）",
         "reference": "参考15ZJ001-外墙-1",
         "layers": [
-          {"order": 1, "material": "弹性外墙涂料", "thickness": "-", "note": "一底两面"},
-          {"order": 2, "material": "抗裂砂浆复合耐碱网格布", "thickness": "5", "note": "压入网格布"},
-          {"order": 3, "material": "岩棉板保温层", "thickness": "按设计", "note": "容重≥140kg/m³，A级防火"},
-          {"order": 4, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3水泥砂浆"},
-          {"order": 5, "material": "基层墙体", "thickness": "结构定", "note": "砌体墙或混凝土墙"}
-        ]
+          {
+            "order": 1,
+            "material": "弹性外墙涂料",
+            "thickness": "-",
+            "note": "一底两面"
+          },
+          {
+            "order": 2,
+            "material": "抗裂砂浆复合耐碱网格布",
+            "thickness": "5",
+            "note": "压入网格布"
+          },
+          {
+            "order": 3,
+            "material": "岩棉板保温层",
+            "thickness": "按设计",
+            "note": "容重≥140kg/m³，A级防火"
+          },
+          {
+            "order": 4,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 5,
+            "material": "基层墙体",
+            "thickness": "结构定",
+            "note": "砌体墙或混凝土墙"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-外墙-1"
       }
     ],
     "室内地面做法": [
@@ -307,22 +946,66 @@
         "name": "公共走道/大厅石材地面",
         "reference": "参考15ZJ001-楼-25",
         "layers": [
-          {"order": 1, "material": "花岗岩/大理石", "thickness": "20", "note": "专用粘结剂，填缝剂填缝"},
-          {"order": 2, "material": "水泥砂浆找平层", "thickness": "30", "note": "1:3干硬性水泥砂浆"},
-          {"order": 3, "material": "C20细石混凝土找平层", "thickness": "40", "note": "随捣随抹平"},
-          {"order": 4, "material": "钢筋混凝土楼板", "thickness": "结构定", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "花岗岩/大理石",
+            "thickness": "20",
+            "note": "专用粘结剂，填缝剂填缝"
+          },
+          {
+            "order": 2,
+            "material": "水泥砂浆找平层",
+            "thickness": "30",
+            "note": "1:3干硬性水泥砂浆"
+          },
+          {
+            "order": 3,
+            "material": "C20细石混凝土找平层",
+            "thickness": "40",
+            "note": "随捣随抹平"
+          },
+          {
+            "order": 4,
+            "material": "钢筋混凝土楼板",
+            "thickness": "结构定",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-楼-25"
       },
       {
         "id": "DM-GJ-002",
         "name": "办公区瓷砖地面",
         "reference": "参考15ZJ001-楼-22",
         "layers": [
-          {"order": 1, "material": "玻化砖", "thickness": "8~10", "note": "专用粘结剂粘贴"},
-          {"order": 2, "material": "水泥砂浆找平层", "thickness": "20", "note": "1:3干硬性水泥砂浆"},
-          {"order": 3, "material": "C20细石混凝土找平层", "thickness": "40", "note": "随捣随抹平"},
-          {"order": 4, "material": "钢筋混凝土楼板", "thickness": "结构定", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "玻化砖",
+            "thickness": "8~10",
+            "note": "专用粘结剂粘贴"
+          },
+          {
+            "order": 2,
+            "material": "水泥砂浆找平层",
+            "thickness": "20",
+            "note": "1:3干硬性水泥砂浆"
+          },
+          {
+            "order": 3,
+            "material": "C20细石混凝土找平层",
+            "thickness": "40",
+            "note": "随捣随抹平"
+          },
+          {
+            "order": 4,
+            "material": "钢筋混凝土楼板",
+            "thickness": "结构定",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-楼-22"
       }
     ],
     "室内墙面做法": [
@@ -331,24 +1014,78 @@
         "name": "公共区域乳胶漆墙面",
         "reference": "参考15ZJ001-内墙-5",
         "layers": [
-          {"order": 1, "material": "乳胶漆", "thickness": "-", "note": "一底两面"},
-          {"order": 2, "material": "满刮腻子", "thickness": "2~3", "note": "两遍找平"},
-          {"order": 3, "material": "混合砂浆抹面", "thickness": "5", "note": "1:0.3:2.5混合砂浆"},
-          {"order": 4, "material": "混合砂浆打底", "thickness": "12", "note": "1:1:6混合砂浆"},
-          {"order": 5, "material": "基层墙体", "thickness": "-", "note": "界面处理"}
-        ]
+          {
+            "order": 1,
+            "material": "乳胶漆",
+            "thickness": "-",
+            "note": "一底两面"
+          },
+          {
+            "order": 2,
+            "material": "满刮腻子",
+            "thickness": "2~3",
+            "note": "两遍找平"
+          },
+          {
+            "order": 3,
+            "material": "混合砂浆抹面",
+            "thickness": "5",
+            "note": "1:0.3:2.5混合砂浆"
+          },
+          {
+            "order": 4,
+            "material": "混合砂浆打底",
+            "thickness": "12",
+            "note": "1:1:6混合砂浆"
+          },
+          {
+            "order": 5,
+            "material": "基层墙体",
+            "thickness": "-",
+            "note": "界面处理"
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-内墙-5"
       },
       {
         "id": "QM-GJ-002",
         "name": "公共卫生间瓷砖墙面",
         "reference": "参考15ZJ001-内墙-8",
         "layers": [
-          {"order": 1, "material": "墙面瓷砖（到顶）", "thickness": "5~8", "note": "专用粘结剂"},
-          {"order": 2, "material": "水泥砂浆找平层", "thickness": "12", "note": "1:3水泥砂浆"},
-          {"order": 3, "material": "JS防水涂料", "thickness": "1.5", "note": "墙面满涂，高度≥2.2m"},
-          {"order": 4, "material": "混合砂浆打底", "thickness": "10", "note": "1:1:6混合砂浆"},
-          {"order": 5, "material": "基层墙体", "thickness": "-", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "墙面瓷砖（到顶）",
+            "thickness": "5~8",
+            "note": "专用粘结剂"
+          },
+          {
+            "order": 2,
+            "material": "水泥砂浆找平层",
+            "thickness": "12",
+            "note": "1:3水泥砂浆"
+          },
+          {
+            "order": 3,
+            "material": "JS防水涂料",
+            "thickness": "1.5",
+            "note": "墙面满涂，高度≥2.2m"
+          },
+          {
+            "order": 4,
+            "material": "混合砂浆打底",
+            "thickness": "10",
+            "note": "1:1:6混合砂浆"
+          },
+          {
+            "order": 5,
+            "material": "基层墙体",
+            "thickness": "-",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-内墙-8"
       }
     ],
     "室内天花做法": [
@@ -357,22 +1094,66 @@
         "name": "矿棉吸声板吊顶",
         "reference": "参考15ZJ001-顶-15",
         "layers": [
-          {"order": 1, "material": "矿棉吸声板", "thickness": "15", "note": "600×600mm，明暗龙骨可选"},
-          {"order": 2, "material": "烤漆龙骨", "thickness": "-", "note": "T型龙骨体系"},
-          {"order": 3, "material": "吊杆", "thickness": "-", "note": "φ8钢筋吊杆"},
-          {"order": 4, "material": "钢筋混凝土板底", "thickness": "结构定", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "矿棉吸声板",
+            "thickness": "15",
+            "note": "600×600mm，明暗龙骨可选"
+          },
+          {
+            "order": 2,
+            "material": "烤漆龙骨",
+            "thickness": "-",
+            "note": "T型龙骨体系"
+          },
+          {
+            "order": 3,
+            "material": "吊杆",
+            "thickness": "-",
+            "note": "φ8钢筋吊杆"
+          },
+          {
+            "order": 4,
+            "material": "钢筋混凝土板底",
+            "thickness": "结构定",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-顶-15"
       },
       {
         "id": "TH-GJ-002",
         "name": "铝扣板吊顶",
         "reference": "参考15ZJ001-顶-18",
         "layers": [
-          {"order": 1, "material": "铝合金扣板", "thickness": "0.6~0.8", "note": "300×300或600×600"},
-          {"order": 2, "material": "龙骨系统", "thickness": "-", "note": "专用龙骨"},
-          {"order": 3, "material": "吊杆", "thickness": "-", "note": "φ8钢筋吊杆"},
-          {"order": 4, "material": "钢筋混凝土板底", "thickness": "结构定", "note": ""}
-        ]
+          {
+            "order": 1,
+            "material": "铝合金扣板",
+            "thickness": "0.6~0.8",
+            "note": "300×300或600×600"
+          },
+          {
+            "order": 2,
+            "material": "龙骨系统",
+            "thickness": "-",
+            "note": "专用龙骨"
+          },
+          {
+            "order": 3,
+            "material": "吊杆",
+            "thickness": "-",
+            "note": "φ8钢筋吊杆"
+          },
+          {
+            "order": 4,
+            "material": "钢筋混凝土板底",
+            "thickness": "结构定",
+            "note": ""
+          }
+        ],
+        "usage": "",
+        "notes": "参考15ZJ001-顶-18"
       }
     ]
   }

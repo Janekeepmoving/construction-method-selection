@@ -1,28 +1,22 @@
 # -*- coding: utf-8 -*-
-"""PDF 图纸输出模块 —— 使用 reportlab 将表格与图框叠加输出为矢量 PDF。"""
+"""PDF 图纸输出模块 —— 5 栏布局，每栏对应一种做法类型。"""
 
 import os
-from reportlab.lib.pagesizes import A2, A3
-from reportlab.lib.units import mm
+from reportlab.lib.pagesizes import mm
 from reportlab.lib import colors
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import Table, TableStyle, Paragraph
-from reportlab.lib.styles import ParagraphStyle
 
-from .title_block import TitleBlock
+from .title_block import PageFrame
 
-# 尝试注册中文字体
 _FONT_REGISTERED = False
 
 
 def _try_register_font():
-    """尝试注册仿宋字体。"""
     global _FONT_REGISTERED
     if _FONT_REGISTERED:
         return
-    # 常见的仿宋字体路径
     candidates = [
         ("C:/Windows/Fonts/simfang.ttf", "FangSong"),
         ("C:/Windows/Fonts/STFANGSO.TTF", "FangSong"),
@@ -41,133 +35,256 @@ def _try_register_font():
 
 
 class PDFExporter:
-    """将表格数据与图框叠加输出为 PDF 文件。"""
+    """5 栏布局 PDF 输出。"""
 
-    def __init__(self, settings: dict, title_block_config: dict):
+    def __init__(self, settings: dict, table_styles: dict):
         self._settings = settings
-        self._tb_config = title_block_config
+        self._styles = table_styles
         self._font_size_body = settings["fonts"]["body"]["size"]
         self._font_size_header = settings["fonts"]["header"]["size"]
         self._font_size_title = settings["fonts"]["title"]["size"]
-        self._font_name = None  # 延迟注册
+        self._font_name = None
+        self._pads = table_styles.get("cell_padding",
+                                       {"horizontal": 1.0, "vertical": 0.5})
 
-    def export(self, table_data: dict, project_info, paper_size: str,
+    def export(self, table_data: dict, project_info,
                output_path: str) -> str:
-        """导出表格到 PDF 文件。"""
         self._font_name = _try_register_font()
         os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
 
-        tb = TitleBlock(self._tb_config, paper_size)
-        page_size = A2 if paper_size == "A2" else A3
+        pf = PageFrame(self._settings)
+        pw_mm = pf.pw * mm
+        ph_mm = pf.ph * mm
 
-        c = canvas.Canvas(output_path, pagesize=page_size)
-        pw, ph = page_size
+        pages = self._paginate_columns(table_data, pf)
+        base, ext = os.path.splitext(output_path)
 
-        # 绘制图框
-        self._draw_title_block_on_canvas(c, tb, project_info, pw, ph)
+        for page_idx, page_cols in enumerate(pages):
+            page_path = output_path if len(pages) == 1 else \
+                f"{base}_p{page_idx + 1}{ext}"
 
-        # 计算表格可用区域
-        usable = tb.inner_rect
-        ux, uy, uw, uh = usable
-        margin = 10 * mm
-        table_x = ux + margin
-        table_y = uy + margin
-        table_w = uw - 2 * margin
-        max_table_h = uh - 2 * margin
+            c = canvas.Canvas(page_path, pagesize=(pw_mm, ph_mm))
+            self._draw_frame(c, pf)
+            self._draw_page(c, page_cols, table_data["sub_columns"],
+                            pf, page_idx + 1, len(pages))
+            c.save()
 
-        self._draw_table_pdf(c, table_data, table_x, table_y,
-                              table_w, max_table_h, ph)
+        return output_path if len(pages) == 1 else output_path
 
-        c.save()
-        return output_path
-
-    def _draw_title_block_on_canvas(self, c, tb: TitleBlock, proj_info,
-                                     pw: float, ph: float):
-        """在 PDF 画布上绘制图框。"""
-        # 外框细线
+    def _draw_frame(self, c, pf: PageFrame):
         c.setLineWidth(0.13)
         c.setStrokeColor(colors.black)
-        for (x1, y1), (x2, y2) in tb.outer_frame_lines():
+        for (x1, y1), (x2, y2) in pf.frame_lines():
             c.line(x1 * mm, y1 * mm, x2 * mm, y2 * mm)
 
-        # 内框粗线
-        c.setLineWidth(0.4)
-        for (x1, y1), (x2, y2) in tb.inner_frame_lines():
-            c.line(x1 * mm, y1 * mm, x2 * mm, y2 * mm)
+    def _paginate_columns(self, table_data: dict, pf: PageFrame) -> list:
+        """与 DXF 导出相同的分页逻辑。"""
+        cols_data = table_data["columns"]
+        n_cols = len(cols_data)
+        if n_cols == 0:
+            return [[]]
 
-        # 标题栏
-        c.setLineWidth(0.25)
-        for (x1, y1), (x2, y2) in tb.title_block_lines():
-            c.line(x1 * mm, y1 * mm, x2 * mm, y2 * mm)
+        title_h = self._styles.get("title_height", 12)
+        section_h = self._styles.get("section_header_height", 7)
+        sub_h = self._styles.get("header_height", 8)
+        row_h = self._styles.get("row_height", 6.5)
+        method_hdr_h = self._styles.get("method_header_height", 7)
 
-        # 信息区域
-        c.setLineWidth(0.4)
-        for (x1, y1), (x2, y2) in tb.info_area_lines():
-            c.line(x1 * mm, y1 * mm, x2 * mm, y2 * mm)
+        _, _, _, content_h = pf.content_rect
+        col_avail_h = content_h - title_h - section_h - sub_h
 
-        # 项目信息文字
-        info = tb.info_cfg
-        field_map = {
-            "项目名称": proj_info.project_name,
-            "图纸名称": proj_info.drawing_name,
-            "图号": proj_info.drawing_number,
-        }
-        for field in info.get("fields", []):
-            label = field["label"]
-            val = field.get("value", field_map.get(label, ""))
-            fx = (field["x"] + 2) * mm
-            fy = (info["y_top"] - info["height"] / 2) * mm
-            display = f"{label}: {val}" if val else label
-            c.setFont(self._font_name, 3.5 * mm)
-            c.drawString(fx, fy, display)
+        pages = []
+        current_page = [{"section_title": c["section_title"],
+                         "methods": []} for c in cols_data]
+        col_heights = [0.0] * n_cols
 
-        # 标题栏内文字
-        for tinfo in tb.title_block_texts():
-            c.setFont(self._font_name, 2.5 * mm)
-            tx = tinfo["x"] * mm
-            ty = tinfo["y"] * mm
-            c.drawString(tx, ty, tinfo["text"])
+        all_methods = []
+        for ci, col in enumerate(cols_data):
+            col_methods = []
+            for m in col["methods"]:
+                n_layers = len(m.get("layers", []))
+                mh = method_hdr_h + n_layers * row_h
+                col_methods.append((m, mh))
+            all_methods.append(col_methods)
 
-    def _draw_table_pdf(self, c, table_data: dict, tx: float, ty: float,
-                         tw: float, max_h: float, ph: float):
-        """在 PDF 画布上绘制表格（简单逐行绘制）。"""
-        cols = table_data["columns"]
-        col_ratios = [c["width"] for c in cols]
-        ratio_sum = sum(col_ratios)
-        col_widths = [r / ratio_sum * tw for r in col_ratios]
+        col_indices = [0] * n_cols
+        columns_finished = [False] * n_cols
 
-        th = table_data["title_height"] * mm
-        hh = table_data["header_height"] * mm
-        rh = table_data["row_height"] * mm
-
-        cur_y_mm = ty + max_h
-
-        # 标题行
-        c.setFont(self._font_name, self._font_size_title * mm)
-        title = table_data["title"]
-        c.drawString(tx + tw / 2 - len(title) * 2 * mm, cur_y_mm - th * 0.7, title)
-        cur_y_mm -= th
-
-        # 表头
-        c.setFont(self._font_name, self._font_size_header * mm)
-        for ci, col in enumerate(cols):
-            cx = tx + sum(col_widths[:ci])
-            c.drawString(cx + 1 * mm, cur_y_mm - hh * 0.6, col["header"])
-        cur_y_mm -= hh
-
-        # 数据行
-        c.setFont(self._font_name, self._font_size_body * mm)
-        for row in table_data["rows"]:
-            if cur_y_mm - rh < ty:
-                break  # 超出页面
-            cells = row.get("cells", [])
-            colspan = row.get("colspan", 1)
-            if colspan > 1 and cells:
-                c.drawString(tx + 1 * mm, cur_y_mm - rh * 0.6, str(cells[0]))
-            else:
-                for ci, cell_text in enumerate(cells):
-                    if ci >= len(col_widths):
+        while not all(columns_finished):
+            for ci in range(n_cols):
+                if columns_finished[ci]:
+                    continue
+                while col_indices[ci] < len(all_methods[ci]):
+                    m, mh = all_methods[ci][col_indices[ci]]
+                    if col_heights[ci] + mh <= col_avail_h:
+                        current_page[ci]["methods"].append(m)
+                        col_heights[ci] += mh
+                        col_indices[ci] += 1
+                    else:
+                        if col_heights[ci] == 0:
+                            current_page[ci]["methods"].append(m)
+                            col_heights[ci] += mh
+                            col_indices[ci] += 1
                         break
-                    cx = tx + sum(col_widths[:ci])
-                    c.drawString(cx + 1 * mm, cur_y_mm - rh * 0.6, str(cell_text))
-            cur_y_mm -= rh
+                if col_indices[ci] >= len(all_methods[ci]):
+                    columns_finished[ci] = True
+
+            pages.append(current_page)
+
+            if not all(columns_finished):
+                current_page = [{"section_title": c["section_title"],
+                                 "methods": []} for c in cols_data]
+                col_heights = [0.0] * n_cols
+                columns_finished = [col_indices[i] >= len(all_methods[i])
+                                    for i in range(n_cols)]
+
+        return pages
+
+    def _draw_page(self, c, columns_data: list, sub_columns: list,
+                   pf: PageFrame, page_num: int, total_pages: int):
+        cx, cy, cw, ch = pf.content_rect
+        n_cols = len(columns_data)
+        gap = self._styles.get("column_gap", 2)
+        col_w = (cw - (n_cols - 1) * gap) / n_cols
+
+        title_h = self._styles.get("title_height", 12)
+
+        # 标题
+        title_text = f"{self._styles['table_type']['name']}（第{page_num}页/共{total_pages}页）" \
+            if total_pages > 1 else self._styles["table_type"]["name"]
+        c.setFont(self._font_name, self._font_size_title * mm)
+        c.drawString((cx + cw / 2 - len(title_text) * 2) * mm,
+                     (cy + ch - title_h * 0.3) * mm, title_text)
+
+        col_top = cy + ch - title_h
+        col_bottom = cy
+        section_h = self._styles.get("section_header_height", 7)
+        sub_h = self._styles.get("header_height", 8)
+        row_h = self._styles.get("row_height", 6.5)
+        method_hdr_h = self._styles.get("method_header_height", 7)
+
+        sub_ratios = [sc["width"] for sc in sub_columns]
+        ratio_sum = sum(sub_ratios)
+        sub_widths = [r / ratio_sum * col_w for r in sub_ratios]
+
+        for ci, col_data in enumerate(columns_data):
+            col_left = cx + ci * (col_w + gap)
+            col_right = col_left + col_w
+
+            # 栏边框
+            c.setLineWidth(0.4)
+            c.line(col_left * mm, col_top * mm, col_right * mm, col_top * mm)
+            c.line(col_left * mm, col_bottom * mm, col_right * mm, col_bottom * mm)
+            c.line(col_left * mm, col_bottom * mm, col_left * mm, col_top * mm)
+            c.line(col_right * mm, col_bottom * mm, col_right * mm, col_top * mm)
+
+            cur_y = col_top
+
+            # 栏标题
+            c.setLineWidth(0.25)
+            c.line(col_left * mm, (cur_y - section_h) * mm,
+                   col_right * mm, (cur_y - section_h) * mm)
+            c.setFont(self._font_name, self._font_size_header * mm)
+            c.drawString((col_left + 1) * mm,
+                         (cur_y - section_h * 0.6) * mm,
+                         col_data["section_title"])
+            cur_y -= section_h
+
+            # 子列表头
+            c.line(col_left * mm, (cur_y - sub_h) * mm,
+                   col_right * mm, (cur_y - sub_h) * mm)
+            c.setFont(self._font_name, self._font_size_body * mm)
+            sub_x = col_left
+            for si, sc in enumerate(sub_columns):
+                c.drawString((sub_x + 1) * mm,
+                             (cur_y - sub_h * 0.6) * mm, sc["header"])
+                if si < len(sub_columns) - 1:
+                    c.line((sub_x + sub_widths[si]) * mm, cur_y * mm,
+                           (sub_x + sub_widths[si]) * mm, (cur_y - sub_h) * mm)
+                sub_x += sub_widths[si]
+            c.line(col_left * mm, cur_y * mm, col_left * mm, (cur_y - sub_h) * mm)
+            c.line(col_right * mm, cur_y * mm, col_right * mm, (cur_y - sub_h) * mm)
+            cur_y -= sub_h
+
+            # 方法
+            for method in col_data.get("methods", []):
+                layers = method.get("layers", [])
+                n_layers = len(layers) if layers else 1
+                total_mh = method_hdr_h + n_layers * row_h
+                if cur_y - total_mh < col_bottom:
+                    break
+
+                method_bottom = cur_y - total_mh
+                sub_x = col_left
+
+                # 编号
+                c.setLineWidth(0.13)
+                c.line(sub_x * mm, cur_y * mm,
+                       (sub_x + sub_widths[0]) * mm, cur_y * mm)
+                c.line(sub_x * mm, method_bottom * mm,
+                       (sub_x + sub_widths[0]) * mm, method_bottom * mm)
+                c.line(sub_x * mm, method_bottom * mm, sub_x * mm, cur_y * mm)
+                c.line((sub_x + sub_widths[0]) * mm, method_bottom * mm,
+                       (sub_x + sub_widths[0]) * mm, cur_y * mm)
+                c.setFont(self._font_name, self._font_size_body * mm)
+                id_text = method.get("id", "")
+                c.drawString((sub_x + 1) * mm,
+                             ((cur_y + method_bottom) / 2) * mm, id_text)
+                sub_x += sub_widths[0]
+
+                # 构造层次
+                c.line((sub_x + sub_widths[1]) * mm, method_bottom * mm,
+                       (sub_x + sub_widths[1]) * mm, cur_y * mm)
+                c.line(sub_x * mm, cur_y * mm,
+                       (sub_x + sub_widths[1]) * mm, cur_y * mm)
+                layer_y = cur_y
+                for li, layer in enumerate(layers):
+                    layer_bottom = layer_y - row_h
+                    if li < len(layers) - 1:
+                        c.setLineWidth(1.0)  # 粗线
+                    else:
+                        c.setLineWidth(0.13)
+                    c.line(sub_x * mm, layer_bottom * mm,
+                           (sub_x + sub_widths[1]) * mm, layer_bottom * mm)
+                    c.setLineWidth(0.13)
+                    order = layer.get("order", li + 1)
+                    material = layer.get("material", "")
+                    thickness = layer.get("thickness", "")
+                    if thickness and thickness != "-":
+                        layer_text = f"{order}. {material}（{thickness}）"
+                    else:
+                        layer_text = f"{order}. {material}"
+                    c.setFont(self._font_name, self._font_size_body * mm)
+                    c.drawString((sub_x + 1) * mm,
+                                 (layer_bottom + row_h * 0.3) * mm,
+                                 layer_text[:30])
+                    layer_y = layer_bottom
+                sub_x += sub_widths[1]
+
+                # 使用范围
+                c.setLineWidth(0.13)
+                c.line(sub_x * mm, cur_y * mm,
+                       (sub_x + sub_widths[2]) * mm, cur_y * mm)
+                c.line(sub_x * mm, method_bottom * mm,
+                       (sub_x + sub_widths[2]) * mm, method_bottom * mm)
+                c.line((sub_x + sub_widths[2]) * mm, method_bottom * mm,
+                       (sub_x + sub_widths[2]) * mm, cur_y * mm)
+                c.setFont(self._font_name, self._font_size_body * mm)
+                c.drawString((sub_x + 1) * mm,
+                             ((cur_y + method_bottom) / 2) * mm,
+                             method.get("usage", "")[:20])
+                sub_x += sub_widths[2]
+
+                # 备注
+                c.line(sub_x * mm, cur_y * mm,
+                       (sub_x + sub_widths[3]) * mm, cur_y * mm)
+                c.line(sub_x * mm, method_bottom * mm,
+                       (sub_x + sub_widths[3]) * mm, method_bottom * mm)
+                c.line((sub_x + sub_widths[3]) * mm, method_bottom * mm,
+                       (sub_x + sub_widths[3]) * mm, cur_y * mm)
+                c.setFont(self._font_name, self._font_size_body * mm)
+                c.drawString((sub_x + 1) * mm,
+                             ((cur_y + method_bottom) / 2) * mm,
+                             method.get("notes", "")[:15])
+
+                cur_y = method_bottom

@@ -1,388 +1,388 @@
 # -*- coding: utf-8 -*-
-"""DXF 图纸输出模块 —— 使用 ezdxf 将表格与图框叠加输出为 DXF 文件。
-
-图纸坐标系: 原点在左下角，X 向右，Y 向上，单位 mm。
-图框外框从 (0,0) 到 (pw, ph)。
-表格定位在内框内部，可跨页。
-"""
+"""DXF 图纸输出模块 —— 5 栏布局，每栏对应一种做法类型。"""
 
 import ezdxf
 from ezdxf import units
 from ezdxf.enums import TextEntityAlignment
-from typing import Optional
 import os
 
-from .title_block import TitleBlock
+from .title_block import PageFrame
 
 
 class DXFExporter:
-    """将表格数据与图框叠加，输出为 .dxf 文件。"""
+    """5 栏布局 DXF 输出。"""
 
-    # 线宽映射
-    LW = {"thick": 40, "medium": 25, "thin": 13}  # ezdxf 线宽以 1/100 mm 为单位
+    LW = {"thick": 40, "medium": 25, "thin": 13, "heavy": 100}
 
-    def __init__(self, settings: dict, title_block_config: dict):
+    def __init__(self, settings: dict, table_styles: dict):
         self._settings = settings
-        self._tb_config = title_block_config
+        self._styles = table_styles
         self._font_name = settings["fonts"]["body"]["name"]
         self._font_size_body = settings["fonts"]["body"]["size"]
         self._font_size_header = settings["fonts"]["header"]["size"]
         self._font_size_title = settings["fonts"]["title"]["size"]
-        self._pads = settings.get("cell_padding", {"horizontal": 1.5, "vertical": 1.0})
+        self._pads = table_styles.get("cell_padding",
+                                       {"horizontal": 1.0, "vertical": 0.5})
+        self._layer_sep_wt = table_styles.get("layer_separator_weight", 1.0)
 
-    def export(self, table_data: dict, project_info, paper_size: str,
+    def export(self, table_data: dict, project_info,
                output_path: str) -> str:
-        """导出单张表格到 DXF 文件。
-
-        Args:
-            table_data: TableBuilder 产出的表格字典
-            project_info: ProjectInfo 对象
-            paper_size: "A2" 或 "A3"
-            output_path: 输出文件路径 (.dxf)
-
-        Returns:
-            实际输出路径
-        """
         os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
 
-        tb = TitleBlock(self._tb_config, paper_size)
+        pf = PageFrame(self._settings)
         doc = ezdxf.new(units=units.MM)
         doc.units = units.MM
-
         msp = doc.modelspace()
         self._setup_layers(doc)
 
-        # ---- 绘制图框 ----
-        self._draw_outer_frame(msp, tb)
-        self._draw_inner_frame(msp, tb)
-        self._draw_title_block(msp, tb)
-        self._draw_info_area(msp, tb, project_info)
+        # 绘制页面外框
+        self._draw_frame(msp, pf)
 
-        # ---- 计算表格可用区域 ----
-        usable = tb.inner_rect  # (x, y, w, h)
-        margin = 10  # 表格距内框边距
+        # 内容区域
+        cx, cy, cw, ch = pf.content_rect
 
-        # ---- 绘制表格（可能跨页） ----
-        actual_path = self._draw_table(msp, table_data, tb, usable, margin,
-                                       project_info, output_path, doc)
-
-        doc.saveas(actual_path)
-        return actual_path
-
-    # ---------- 图层设置 ----------
-
-    def _setup_layers(self, doc):
-        """创建线型分级图层。"""
-        for name, lw in [("FRAME-OUTER", self.LW["thin"]),
-                          ("FRAME-INNER", self.LW["thick"]),
-                          ("TITLE-BLOCK", self.LW["medium"]),
-                          ("TABLE-BORDER", self.LW["thick"]),
-                          ("TABLE-HEADER", self.LW["medium"]),
-                          ("TABLE-CELL", self.LW["thin"]),
-                          ("TEXT", self.LW["thin"])]:
-            layer = doc.layers.new(name)
-            layer.lineweight = lw
-
-        # 文字样式: 仿宋
-        style_name = self._font_name.replace("_", "")
-        try:
-            doc.styles.new(style_name, dxfattribs={"font": self._font_name + ".ttf"})
-        except Exception:
-            # 如果指定字体不可用，使用默认
-            pass
-
-    # ---------- 图框绘制 ----------
-
-    def _draw_outer_frame(self, msp, tb: TitleBlock):
-        """外框细线。"""
-        for (x1, y1), (x2, y2) in tb.outer_frame_lines():
-            msp.add_line((x1, y1), (x2, y2), dxfattribs={"layer": "FRAME-OUTER"})
-
-    def _draw_inner_frame(self, msp, tb: TitleBlock):
-        """内框粗线。"""
-        for (x1, y1), (x2, y2) in tb.inner_frame_lines():
-            msp.add_line((x1, y1), (x2, y2), dxfattribs={"layer": "FRAME-INNER"})
-
-    def _draw_title_block(self, msp, tb: TitleBlock):
-        """标题栏。"""
-        for (x1, y1), (x2, y2) in tb.title_block_lines():
-            msp.add_line((x1, y1), (x2, y2), dxfattribs={"layer": "TITLE-BLOCK"})
-        # 标题栏文字
-        for tinfo in tb.title_block_texts():
-            self._add_text_centered(msp, tinfo["text"],
-                                     tinfo["x"], tinfo["y"],
-                                     tinfo["width"], tinfo["height"],
-                                     self._font_size_body)
-
-        # 标题横条
-        ts = tb.ts_cfg
-        if ts:
-            tx = ts.get("x_offset", 0)
-            ty = ts.get("y_offset", 0)
-            tw = ts.get("width", 0)
-            th = ts.get("height", 0)
-            msp.add_line((tx, ty), (tx + tw, ty), dxfattribs={"layer": "TITLE-BLOCK"})
-            msp.add_line((tx, ty + th), (tx + tw, ty + th),
-                         dxfattribs={"layer": "TITLE-BLOCK"})
-
-    def _draw_info_area(self, msp, tb: TitleBlock, project_info):
-        """项目信息区域与项目数据填充。"""
-        info = tb.info_cfg
-        if not info:
-            return
-        # 外框
-        for (x1, y1), (x2, y2) in tb.info_area_lines():
-            msp.add_line((x1, y1), (x2, y2), dxfattribs={"layer": "TITLE-BLOCK"})
-
-        # 项目信息文字
-        proj = project_info
-        field_map = {
-            "项目名称": proj.project_name,
-            "图纸名称": proj.drawing_name,
-            "图号": proj.drawing_number,
-        }
-        for field in info.get("fields", []):
-            label = field["label"]
-            val = field.get("value", field_map.get(label, ""))
-            fx = field["x"]
-            fy = info["y_top"] - info["height"] / 2
-            fw = field["width"]
-            display = f"{label}: {val}" if val else label
-            self._add_text_centered(msp, display, fx + fw / 2, fy,
-                                     fw, info["height"], self._font_size_body)
-
-    # ---------- 表格绘制 ----------
-
-    def _draw_table(self, msp, table_data: dict, tb: TitleBlock,
-                    usable: tuple, margin: float, project_info,
-                    output_path: str, doc) -> str:
-        """在可用区域内绘制表格，内容超出时自动分页。"""
-        ux, uy, uw, uh = usable
-        table_x = ux + margin
-        table_y = uy + margin
-        table_w = uw - 2 * margin
-        max_table_h = uh - 2 * margin
-
-        # 列宽：按配置比例缩放至可用宽度
-        cols = table_data["columns"]
-        col_ratios = [c["width"] for c in cols]
-        ratio_sum = sum(col_ratios)
-        col_widths = [r / ratio_sum * table_w for r in col_ratios]
-
-        th = table_data["title_height"]
-        hh = table_data["header_height"]
-        rh = table_data["row_height"]
-
-        title_h = th
-        header_h = hh
-
-        # 将行按高度分组，确定每页容纳行数
-        data_rows = table_data["rows"]
-        first_page_overhead = title_h + header_h + 10
-        page_overhead = header_h + 10
-        row_height = rh
-
-        # 分组
-        pages = self._paginate_rows(data_rows, row_height,
-                                     max_table_h, first_page_overhead,
-                                     page_overhead)
-
-        # 为每页生成文件
+        # 分页处理
+        pages = self._paginate_columns(table_data, pf)
         base, ext = os.path.splitext(output_path)
-        for page_idx, page_rows in enumerate(pages):
+
+        for page_idx, page_cols in enumerate(pages):
             page_path = output_path if len(pages) == 1 else \
                 f"{base}_p{page_idx + 1}{ext}"
 
             if page_idx == 0 and len(pages) == 1:
-                doc2 = doc
-                msp2 = msp
+                doc_page, msp_page = doc, msp
             else:
-                doc2 = ezdxf.new(units=units.MM)
-                doc2.units = units.MM
-                msp2 = doc2.modelspace()
-                self._setup_layers(doc2)
-                tb2 = TitleBlock(self._tb_config, tb.size)
-                self._draw_outer_frame(msp2, tb2)
-                self._draw_inner_frame(msp2, tb2)
-                self._draw_title_block(msp2, tb2)
-                self._draw_info_area(msp2, tb2, project_info)
+                doc_page = ezdxf.new(units=units.MM)
+                doc_page.units = units.MM
+                msp_page = doc_page.modelspace()
+                self._setup_layers(doc_page)
+                pf2 = PageFrame(self._settings)
+                self._draw_frame(msp_page, pf2)
 
-            # 绘制本页表格
-            show_title = (page_idx == 0)
-            page_table_h = (title_h if show_title else 0) + header_h + \
-                len(page_rows) * row_height
-            start_y = table_y + max_table_h - page_table_h - 5
-
-            self._draw_table_content(msp2, col_widths, cols,
-                                      table_x, start_y,
-                                      page_rows, show_title,
-                                      table_data["title"],
-                                      title_h, header_h, row_height,
-                                      page_idx + 1, len(pages))
+            self._draw_page(msp_page, page_cols, table_data["sub_columns"],
+                            pf, page_idx + 1, len(pages))
 
             if len(pages) > 1:
-                doc2.saveas(page_path)
+                doc_page.saveas(page_path)
 
+        doc.saveas(output_path if len(pages) == 1 else output_path)
         return output_path if len(pages) == 1 else output_path
 
-    def _paginate_rows(self, rows: list, row_h: float,
-                        max_h: float, first_overhead: float,
-                        other_overhead: float) -> list:
-        """将数据行分配到多个页面。"""
+    # ---------- 图层 ----------
+
+    def _setup_layers(self, doc):
+        for name, lw in [("FRAME", self.LW["thin"]),
+                          ("TABLE-BORDER", self.LW["thick"]),
+                          ("TABLE-HEADER", self.LW["medium"]),
+                          ("TABLE-CELL", self.LW["thin"]),
+                          ("TABLE-LAYER-SEP", self.LW["heavy"]),
+                          ("TEXT", self.LW["thin"])]:
+            layer = doc.layers.new(name)
+            layer.lineweight = lw
+
+        style_name = self._font_name.replace("_", "")
+        try:
+            doc.styles.new(style_name, dxfattribs={"font": self._font_name + ".ttf"})
+        except Exception:
+            pass
+
+    # ---------- 页面外框 ----------
+
+    def _draw_frame(self, msp, pf: PageFrame):
+        for (x1, y1), (x2, y2) in pf.frame_lines():
+            msp.add_line((x1, y1), (x2, y2), dxfattribs={"layer": "FRAME"})
+
+    # ---------- 分页 ----------
+
+    def _paginate_columns(self, table_data: dict, pf: PageFrame) -> list:
+        """将 5 栏数据分配到多个页面，超出高度的栏延续到下一页。"""
+        cols_data = table_data["columns"]
+        n_cols = len(cols_data)
+        if n_cols == 0:
+            return [[]]
+
+        title_h = self._get_title_height()
+        section_h = self._styles.get("section_header_height", 7)
+        sub_h = self._styles.get("header_height", 8)
+        row_h = self._styles.get("row_height", 6.5)
+        method_hdr_h = self._styles.get("method_header_height", 7)
+
+        _, _, _, content_h = pf.content_rect
+        # 每栏可用高度 = 内容高度 - 标题 - 栏标题 - 子列标题
+        col_avail_h = content_h - title_h - section_h - sub_h
+
         pages = []
-        remaining = list(rows)
-        first_page = True
-        while remaining:
-            capacity = int((max_h - (first_overhead if first_page else other_overhead))
-                           // row_h)
-            capacity = max(capacity, 1)
-            pages.append(remaining[:capacity])
-            remaining = remaining[capacity:]
-            first_page = False
+        current_page = [{"section_title": c["section_title"],
+                         "methods": []} for c in cols_data]
+        col_heights = [0.0] * n_cols  # 每栏已用高度
+
+        # 收集每栏所有方法及其高度
+        all_methods = []
+        for ci, col in enumerate(cols_data):
+            col_methods = []
+            for m in col["methods"]:
+                n_layers = len(m.get("layers", []))
+                mh = method_hdr_h + n_layers * row_h
+                col_methods.append((m, mh))
+            all_methods.append(col_methods)
+
+        # 逐栏逐方法放置
+        col_indices = [0] * n_cols  # 当前处理到的方法索引
+        columns_finished = [False] * n_cols
+
+        while not all(columns_finished):
+            overflow = False
+            for ci in range(n_cols):
+                if columns_finished[ci]:
+                    continue
+                while col_indices[ci] < len(all_methods[ci]):
+                    m, mh = all_methods[ci][col_indices[ci]]
+                    if col_heights[ci] + mh <= col_avail_h:
+                        current_page[ci]["methods"].append(m)
+                        col_heights[ci] += mh
+                        col_indices[ci] += 1
+                    else:
+                        overflow = True
+                        # 如果当前栏完全为空且一个方法都放不下，强制放入
+                        if col_heights[ci] == 0:
+                            current_page[ci]["methods"].append(m)
+                            col_heights[ci] += mh
+                            col_indices[ci] += 1
+                        break
+                if col_indices[ci] >= len(all_methods[ci]):
+                    columns_finished[ci] = True
+
+            pages.append(current_page)
+
+            if not all(columns_finished):
+                current_page = [{"section_title": c["section_title"],
+                                 "methods": []} for c in cols_data]
+                col_heights = [0.0] * n_cols
+                columns_finished = [col_indices[i] >= len(all_methods[i])
+                                    for i in range(n_cols)]
+
         return pages
 
-    def _draw_table_content(self, msp, col_widths: list, cols: list,
-                             table_x: float, start_y: float,
-                             rows: list, show_title: bool,
-                             title: str, title_h: float,
-                             header_h: float, row_h: float,
-                             page_num: int, total_pages: int):
-        """绘制一张表的内容（不含图框）。"""
-        pad_h = self._pads["horizontal"]
-        pad_v = self._pads["vertical"]
+    # ---------- 页面绘制 ----------
 
-        # 列累计 X
-        col_x = []
-        cx = table_x
-        for w in col_widths:
-            col_x.append(cx)
-            cx += w
-        table_w = sum(col_widths)
-        end_x = table_x + table_w
+    def _draw_page(self, msp, columns_data: list, sub_columns: list,
+                   pf: PageFrame, page_num: int, total_pages: int):
+        """绘制一页完整内容。"""
+        cx, cy, cw, ch = pf.content_rect
+        n_cols = len(columns_data)
+        gap = self._styles.get("column_gap", 2)
+        col_w = (cw - (n_cols - 1) * gap) / n_cols
 
-        # 当前 Y 位置（从上往下画）
-        cur_y = start_y
+        title_h = self._get_title_height()
 
-        # ---- 标题行 ----
-        if show_title:
-            title_display = f"{title}  (第{page_num}页/共{total_pages}页)" \
-                if total_pages > 1 else title
-            msp.add_line((table_x, cur_y), (end_x, cur_y),
-                         dxfattribs={"layer": "TABLE-BORDER"})
-            msp.add_line((table_x, cur_y + title_h), (end_x, cur_y + title_h),
-                         dxfattribs={"layer": "TABLE-BORDER"})
-            msp.add_line((table_x, cur_y), (table_x, cur_y + title_h),
-                         dxfattribs={"layer": "TABLE-BORDER"})
-            msp.add_line((end_x, cur_y), (end_x, cur_y + title_h),
-                         dxfattribs={"layer": "TABLE-BORDER"})
-            self._add_text_centered(msp, title_display,
-                                     table_x + table_w / 2,
-                                     cur_y + title_h / 2,
-                                     table_w, title_h,
-                                     self._font_size_title)
-            cur_y += title_h
+        # ---- 标题 ----
+        title_text = f"{self._styles['table_type']['name']}（第{page_num}页/共{total_pages}页）" \
+            if total_pages > 1 else self._styles["table_type"]["name"]
+        self._add_title(msp, title_text, cx, cy + ch - title_h, cw, title_h)
 
-        # ---- 表头行 ----
-        msp.add_line((table_x, cur_y), (end_x, cur_y),
-                     dxfattribs={"layer": "TABLE-HEADER"})
-        msp.add_line((table_x, cur_y + header_h), (end_x, cur_y + header_h),
-                     dxfattribs={"layer": "TABLE-HEADER"})
-        for ci, col in enumerate(cols):
-            cx = col_x[ci]
-            if ci < len(cols) - 1:
-                msp.add_line((col_x[ci + 1], cur_y),
-                             (col_x[ci + 1], cur_y + header_h),
-                             dxfattribs={"layer": "TABLE-HEADER"})
-            self._add_text_centered(msp, col["header"],
-                                     cx + col_widths[ci] / 2,
-                                     cur_y + header_h / 2,
-                                     col_widths[ci], header_h,
-                                     self._font_size_header)
-        # 左边线
-        msp.add_line((table_x, cur_y), (table_x, cur_y + header_h),
-                     dxfattribs={"layer": "TABLE-HEADER"})
-        msp.add_line((end_x, cur_y), (end_x, cur_y + header_h),
-                     dxfattribs={"layer": "TABLE-HEADER"})
-        cur_y += header_h
+        # 标题下横线
+        self._hline(msp, cx, cx + cw, cy + ch - title_h, "TABLE-BORDER")
 
-        # ---- 数据行 ----
-        for ri, row in enumerate(rows):
-            row_bottom = cur_y
-            row_top = cur_y + row_h
-            layer = "TABLE-HEADER" if row.get("type") == "group_header" else "TABLE-CELL"
+        # ---- 5 栏 ----
+        col_top = cy + ch - title_h
+        col_bottom = cy
 
-            # 水平线
-            msp.add_line((table_x, row_bottom), (end_x, row_bottom),
-                         dxfattribs={"layer": layer})
-            msp.add_line((table_x, row_top), (end_x, row_top),
-                         dxfattribs={"layer": layer})
-            # 竖线
-            for ci in range(len(cols) + 1):
-                lx = col_x[ci] if ci < len(cols) else end_x
-                msp.add_line((lx, row_bottom), (lx, row_top),
-                             dxfattribs={"layer": layer})
+        for ci, col_data in enumerate(columns_data):
+            col_left = cx + ci * (col_w + gap)
+            col_right = col_left + col_w
 
-            # 单元格文字
-            cells = row.get("cells", [])
-            colspan = row.get("colspan", 1)
-            if colspan > 1 and cells:
-                # 合并单元格：文字跨多列居中
-                merged_w = sum(col_widths[:colspan])
-                self._add_text_centered(msp, cells[0],
-                                         table_x + merged_w / 2,
-                                         cur_y + row_h / 2,
-                                         merged_w, row_h,
-                                         self._font_size_body)
-            else:
-                for ci, cell_text in enumerate(cells):
-                    if ci >= len(col_widths):
-                        break
-                    self._add_text_cell(msp, str(cell_text),
-                                         col_x[ci], cur_y,
-                                         col_widths[ci], row_h,
-                                         self._font_size_body)
+            # 栏外框
+            self._vline(msp, col_left, col_bottom, col_top, "TABLE-BORDER")
+            self._vline(msp, col_right, col_bottom, col_top, "TABLE-BORDER")
+            self._hline(msp, col_left, col_right, col_bottom, "TABLE-BORDER")
 
-            cur_y += row_h
+            self._draw_column(msp, col_data, sub_columns,
+                              col_left, col_bottom, col_w, col_top)
 
-        # 表格底边加粗线
-        msp.add_line((table_x, cur_y), (end_x, cur_y),
-                     dxfattribs={"layer": "TABLE-BORDER"})
-        # 左右外框
-        msp.add_line((table_x, start_y + (title_h if show_title else 0)),
-                     (table_x, cur_y), dxfattribs={"layer": "TABLE-BORDER"})
-        msp.add_line((end_x, start_y + (title_h if show_title else 0)),
-                     (end_x, cur_y), dxfattribs={"layer": "TABLE-BORDER"})
+    def _draw_column(self, msp, col_data: dict, sub_columns: list,
+                     col_left: float, col_bottom: float,
+                     col_w: float, col_top: float):
+        """绘制一栏的内容。"""
+        section_h = self._styles.get("section_header_height", 7)
+        sub_h = self._styles.get("header_height", 8)
+        row_h = self._styles.get("row_height", 6.5)
+        method_hdr_h = self._styles.get("method_header_height", 7)
+        style_name = self._font_name.replace("_", "")
+
+        # 子列宽度（按比例缩放到栏宽）
+        sub_ratios = [sc["width"] for sc in sub_columns]
+        ratio_sum = sum(sub_ratios)
+        sub_widths = [r / ratio_sum * col_w for r in sub_ratios]
+
+        # ---- 栏标题 ----
+        cur_y = col_top
+        self._hline(msp, col_left, col_left + col_w, cur_y - section_h, "TABLE-HEADER")
+        self._add_text_centered(msp, col_data["section_title"],
+                                 col_left + col_w / 2, cur_y - section_h / 2,
+                                 col_w, section_h, self._font_size_header,
+                                 style_name)
+        cur_y -= section_h
+
+        # ---- 子列表头 ----
+        sub_x = col_left
+        self._hline(msp, col_left, col_left + col_w, cur_y - sub_h, "TABLE-HEADER")
+        for si, sc in enumerate(sub_columns):
+            sx = sub_x + sub_widths[si] / 2
+            self._add_text_centered(msp, sc["header"], sx,
+                                     cur_y - sub_h / 2,
+                                     sub_widths[si], sub_h,
+                                     self._font_size_body, style_name)
+            if si < len(sub_columns) - 1:
+                self._vline(msp, sub_x + sub_widths[si], cur_y, cur_y - sub_h,
+                           "TABLE-HEADER")
+            sub_x += sub_widths[si]
+        self._vline(msp, col_left, cur_y, cur_y - sub_h, "TABLE-HEADER")
+        self._vline(msp, col_left + col_w, cur_y, cur_y - sub_h, "TABLE-HEADER")
+        cur_y -= sub_h
+
+        # ---- 方法 ----
+        for method in col_data.get("methods", []):
+            layers = method.get("layers", [])
+            n_layers = len(layers) if layers else 1
+            total_mh = method_hdr_h + n_layers * row_h
+
+            if cur_y - total_mh < col_bottom:
+                break  # 超出栏底
+
+            method_bottom = cur_y - total_mh
+            sub_x = col_left
+
+            # === 编号列 (col 0) ===
+            self._vline(msp, sub_x, method_bottom, cur_y, "TABLE-CELL")
+            self._vline(msp, sub_x + sub_widths[0], method_bottom, cur_y,
+                       "TABLE-CELL")
+            self._hline(msp, sub_x, sub_x + sub_widths[0], cur_y, "TABLE-CELL")
+            self._hline(msp, sub_x, sub_x + sub_widths[0], method_bottom,
+                       "TABLE-CELL")
+            self._add_text_centered(msp, method.get("id", ""),
+                                     sub_x + sub_widths[0] / 2,
+                                     (cur_y + method_bottom) / 2,
+                                     sub_widths[0], total_mh,
+                                     self._font_size_body, style_name)
+            sub_x += sub_widths[0]
+
+            # === 构造层次列 (col 1) ===
+            self._vline(msp, sub_x + sub_widths[1], method_bottom, cur_y,
+                       "TABLE-CELL")
+            # 做法名称（小字，在构造层次顶部）
+            name_h = min(row_h, total_mh - n_layers * row_h)
+            name_bottom = cur_y - name_h
+            self._hline(msp, sub_x, sub_x + sub_widths[1], name_bottom, "TABLE-CELL")
+            self._add_text_cell(msp, method.get("name", ""),
+                                 sub_x, name_bottom,
+                                 sub_widths[1], name_h,
+                                 self._font_size_body, style_name)
+            # 层之间用粗线分隔
+            layer_y = name_bottom
+            for li, layer in enumerate(layers):
+                layer_top = layer_y
+                layer_bottom = layer_y - row_h
+                if li < len(layers) - 1:
+                    # 粗分隔线
+                    self._hline(msp, sub_x, sub_x + sub_widths[1],
+                               layer_bottom, "TABLE-LAYER-SEP")
+                else:
+                    self._hline(msp, sub_x, sub_x + sub_widths[1],
+                               layer_bottom, "TABLE-CELL")
+                # 层次文字
+                order = layer.get("order", li + 1)
+                material = layer.get("material", "")
+                thickness = layer.get("thickness", "")
+                if thickness and thickness != "-":
+                    layer_text = f"{order}. {material}（{thickness}）"
+                else:
+                    layer_text = f"{order}. {material}"
+                self._add_text_cell(msp, layer_text,
+                                     sub_x, layer_bottom,
+                                     sub_widths[1], row_h,
+                                     self._font_size_body, style_name)
+                layer_y = layer_bottom
+            # 顶部线
+            self._hline(msp, sub_x, sub_x + sub_widths[1], cur_y, "TABLE-CELL")
+            sub_x += sub_widths[1]
+
+            # === 使用范围列 (col 2) ===
+            self._vline(msp, sub_x + sub_widths[2], method_bottom, cur_y,
+                       "TABLE-CELL")
+            self._hline(msp, sub_x, sub_x + sub_widths[2], cur_y, "TABLE-CELL")
+            self._hline(msp, sub_x, sub_x + sub_widths[2], method_bottom,
+                       "TABLE-CELL")
+            self._add_text_centered(msp, method.get("usage", ""),
+                                     sub_x + sub_widths[2] / 2,
+                                     (cur_y + method_bottom) / 2,
+                                     sub_widths[2], total_mh,
+                                     self._font_size_body, style_name)
+            sub_x += sub_widths[2]
+
+            # === 备注列 (col 3) ===
+            self._vline(msp, sub_x + sub_widths[3], method_bottom, cur_y,
+                       "TABLE-CELL")
+            self._hline(msp, sub_x, sub_x + sub_widths[3], cur_y, "TABLE-CELL")
+            self._hline(msp, sub_x, sub_x + sub_widths[3], method_bottom,
+                       "TABLE-CELL")
+            self._add_text_centered(msp, method.get("notes", ""),
+                                     sub_x + sub_widths[3] / 2,
+                                     (cur_y + method_bottom) / 2,
+                                     sub_widths[3], total_mh,
+                                     self._font_size_body, style_name)
+
+            cur_y = method_bottom
+
+    # ---------- 线条辅助 ----------
+
+    def _hline(self, msp, x1, x2, y, layer):
+        msp.add_line((x1, y), (x2, y), dxfattribs={"layer": layer})
+
+    def _vline(self, msp, x, y1, y2, layer):
+        msp.add_line((x, y1), (x, y2), dxfattribs={"layer": layer})
+
+    # ---------- 标题 ----------
+
+    def _get_title_height(self):
+        return self._styles.get("title_height", 12)
+
+    def _add_title(self, msp, text: str, tx: float, ty: float,
+                   tw: float, th: float):
+        style_name = self._font_name.replace("_", "")
+        msp.add_text(
+            text,
+            dxfattribs={"layer": "TEXT", "height": self._font_size_title,
+                        "width": 0.7, "style": style_name},
+        ).set_placement((tx + tw / 2, ty + th / 2),
+                         align=TextEntityAlignment.MIDDLE_CENTER)
 
     # ---------- 文字辅助 ----------
 
     def _add_text_centered(self, msp, text: str, cx: float, cy: float,
-                            cell_w: float, cell_h: float, font_size: float):
-        """在单元格中心添加单行文字。"""
+                            cell_w: float, cell_h: float, font_size: float,
+                            style_name: str):
         if not text:
             return
         fs = font_size
         max_w = cell_w - 2 * self._pads["horizontal"]
-        # 估算字符宽度 (仿宋字体宽高比约 0.7)
         char_w = fs * 0.7
         max_chars = int(max_w / char_w) if char_w > 0 else 20
-        display = str(text)[:max_chars]
+        lines = str(text).split("\n")
+        # 只显示前几行
+        display = lines[0][:max_chars]
+        if len(lines) > 1:
+            second = lines[1][:max_chars] if len(lines) > 1 else ""
+            display = display + "\n" + second
 
         msp.add_text(
             display,
-            dxfattribs={
-                "layer": "TEXT",
-                "height": fs,
-                "width": 0.7,
-                "style": self._font_name.replace("_", ""),
-            },
-        ).set_placement(
-            (cx, cy),
-            align=TextEntityAlignment.MIDDLE_CENTER,
-        )
+            dxfattribs={"layer": "TEXT", "height": fs,
+                        "width": 0.7, "style": style_name},
+        ).set_placement((cx, cy), align=TextEntityAlignment.MIDDLE_CENTER)
 
     def _add_text_cell(self, msp, text: str, x: float, y: float,
-                        w: float, h: float, font_size: float):
-        """在数据单元格内添加文字（左对齐，留边距）。"""
+                        w: float, h: float, font_size: float,
+                        style_name: str):
         if not text:
             return
         fs = font_size
@@ -394,13 +394,7 @@ class DXFExporter:
 
         msp.add_text(
             display,
-            dxfattribs={
-                "layer": "TEXT",
-                "height": fs,
-                "width": 0.7,
-                "style": self._font_name.replace("_", ""),
-            },
-        ).set_placement(
-            (x + pad_h, y + h / 2),
-            align=TextEntityAlignment.MIDDLE_LEFT,
-        )
+            dxfattribs={"layer": "TEXT", "height": fs,
+                        "width": 0.7, "style": style_name},
+        ).set_placement((x + pad_h, y + h * 0.25),
+                         align=TextEntityAlignment.MIDDLE_LEFT)

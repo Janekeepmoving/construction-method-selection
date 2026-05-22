@@ -2,6 +2,12 @@
   "app_name": "建筑做法构造选型与自动出图软件",
   "version": "1.0.0",
   "paper_sizes": {
+    "custom_736x574": {
+      "width": 736,
+      "height": 574,
+      "unit": "mm",
+      "margin": 15
+    },
     "A2": {
       "width": 594,
       "height": 420,
@@ -15,6 +21,7 @@
       "binding_margin": 25
     }
   },
+  "default_paper_size": "custom_736x574",
   "line_weights": {
     "thick": 0.4,
     "medium": 0.25,

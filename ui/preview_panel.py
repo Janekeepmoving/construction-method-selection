@@ -1,102 +1,80 @@
 # -*- coding: utf-8 -*-
-"""表格预览面板 —— 生成前预览三种表格的数据概览。"""
+"""表格预览面板 —— 生成前预览 5 栏建筑构造做法表。"""
 
 import tkinter as tk
 from tkinter import ttk
 
 
 class PreviewPanel(ttk.LabelFrame):
-    """表格数据预览面板。
-
-    展示生成的表格的行数、列数、关键摘要，供用户在出图前确认。
-    """
+    """表格数据预览面板。"""
 
     def __init__(self, parent):
-        super().__init__(parent, text="表格预览", padding=5)
+        super().__init__(parent, text="表格预览（5栏布局）", padding=5)
+        self._frame, self._text = self._create_text_area()
 
-        self._notebook = ttk.Notebook(self)
-        self._notebook.pack(fill=tk.BOTH, expand=True)
-
-        # 三个 Tab
-        self._tab1_frame, self._tab1_text = self._create_text_tab()
-        self._tab2_frame, self._tab2_text = self._create_text_tab()
-        self._tab3_frame, self._tab3_text = self._create_text_tab()
-
-        self._notebook.add(self._tab1_frame, text="构造做法表")
-        self._notebook.add(self._tab2_frame, text="装修一览表")
-        self._notebook.add(self._tab3_frame, text="室内装修表")
-
-    def _create_text_tab(self):
-        """创建含多行文本显示的面板页，返回 (frame, text_widget)。"""
-        frame = ttk.Frame(self._notebook)
+    def _create_text_area(self):
+        frame = ttk.Frame(self)
+        frame.pack(fill=tk.BOTH, expand=True)
         text = tk.Text(frame, wrap=tk.NONE, font=("Consolas", 9),
-                       width=60, height=20)
+                       width=90, height=30)
         h_scroll = ttk.Scrollbar(frame, orient=tk.HORIZONTAL,
                                   command=text.xview)
         v_scroll = ttk.Scrollbar(frame, orient=tk.VERTICAL,
                                   command=text.yview)
         text.configure(xscrollcommand=h_scroll.set,
                        yscrollcommand=v_scroll.set)
-
         text.grid(row=0, column=0, sticky="nsew")
         v_scroll.grid(row=0, column=1, sticky="ns")
         h_scroll.grid(row=1, column=0, sticky="ew")
-
         frame.grid_rowconfigure(0, weight=1)
         frame.grid_columnconfigure(0, weight=1)
-
         return frame, text
 
     def update_preview(self, table_builder, selections: dict):
-        """根据当前选择更新三个预览 Tab。"""
         if not selections or all(
             not methods for part_data in selections.values()
             for methods in part_data.values()
         ):
-            for tab in [self._tab1_text, self._tab2_text, self._tab3_text]:
-                tab.delete("1.0", tk.END)
-                tab.insert("1.0", u"（暂无选择，请在左侧添加做法）")
+            self._text.delete("1.0", tk.END)
+            self._text.insert("1.0", "（暂无选择，请在左侧添加做法）")
             return
 
-        # 构造做法表
-        t1 = table_builder.build_method_table(selections)
-        self._show_table_preview(self._tab1_text, t1)
-
-        # 建筑装修一览表
-        t2 = table_builder.build_decoration_summary(selections)
-        self._show_table_preview(self._tab2_text, t2)
-
-        # 室内装修一览表
-        t3 = table_builder.build_interior_decoration(selections)
-        self._show_table_preview(self._tab3_text, t3)
+        table_data = table_builder.build_method_table(selections)
+        self._show_table_preview(self._text, table_data)
 
     def _show_table_preview(self, text_widget, table_data: dict):
-        """在文本控件中以 ASCII 方式预览表格。"""
         text_widget.delete("1.0", tk.END)
 
         lines = []
-        lines.append(f"【{table_data['title']}】")
-        lines.append(f"列数: {len(table_data['columns'])}, "
-                     f"数据行数: {len(table_data['rows'])}, "
-                     f"总宽: {table_data['total_width']:.0f}mm, "
-                     f"估算高: {table_data['total_height_estimate']:.0f}mm")
-        lines.append("-" * 80)
+        lines.append(f"【{table_data['title']}】  5栏布局")
+        total_methods = sum(len(c["methods"]) for c in table_data["columns"])
+        lines.append(f"共 {len(table_data['columns'])} 栏, "
+                     f"{total_methods} 条做法")
+        lines.append("")
 
-        # 表头
-        headers = [c["header"] for c in table_data["columns"]]
-        lines.append(" | ".join(f"{h:^12s}" for h in headers))
-        lines.append("-" * 80)
-
-        # 数据行（只显示前 40 行预览）
-        for i, row in enumerate(table_data["rows"][:40]):
-            cells = row.get("cells", [])
-            padded = []
-            for j, cell in enumerate(cells):
-                s = str(cell)[:12]
-                padded.append(f"{s:<12s}")
-            lines.append(" | ".join(padded))
-
-        if len(table_data["rows"]) > 40:
-            lines.append(f"... (共 {len(table_data['rows'])} 行，仅显示前 40 行)")
+        # 显示每栏摘要
+        for ci, col in enumerate(table_data["columns"]):
+            methods = col.get("methods", [])
+            lines.append(f"=== {col['section_title']} "
+                         f"（{len(methods)} 条做法） ===")
+            if not methods:
+                lines.append("  （无）")
+                continue
+            for m in methods[:5]:  # 每栏只显示前 5 条
+                layers = m.get("layers", [])
+                n = len(layers)
+                lines.append(f"  [{m['id']}] {m.get('name', '')[:20]} "
+                             f"({n}层)")
+                for layer in layers[:3]:  # 每做法只显示前 3 层
+                    mat = layer.get("material", "")[:30]
+                    thick = layer.get("thickness", "")
+                    lines.append(f"       {layer.get('order','')}. {mat} "
+                                 f"({thick})" if thick and thick != "-"
+                                 else f"       {layer.get('order','')}. {mat}")
+                if len(layers) > 3:
+                    lines.append(f"       ... 共 {len(layers)} 层")
+            if len(methods) > 5:
+                lines.append(f"  ... 共 {len(methods)} 条做法")
+            lines.append("")
 
         text_widget.insert("1.0", "\n".join(lines))

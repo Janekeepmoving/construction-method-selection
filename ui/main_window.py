@@ -15,7 +15,6 @@ from core.method_manager import MethodLibrary
 from core.project_manager import ProjectInfo
 from core.selection_manager import SelectionManager
 from core.table_builder import TableBuilder
-from output.title_block import TitleBlock
 from output.dxf_exporter import DXFExporter
 from output.pdf_exporter import PDFExporter
 
@@ -49,10 +48,6 @@ class MainWindow(tk.Tk):
                   "r", encoding="utf-8") as f:
             self._table_styles = json.load(f)
 
-        # 图框配置
-        with open(os.path.join(self._config_dir, "title_block.json"),
-                  "r", encoding="utf-8") as f:
-            self._tb_config = json.load(f)
 
         # ---- 核心模块 ----
         lib_path = os.path.join(self._config_dir, "methods_library.json")
@@ -100,10 +95,10 @@ class MainWindow(tk.Tk):
 
         # 图幅选择
         ttk.Label(bar, text="图幅:").pack(side=tk.LEFT)
-        self._paper_var = tk.StringVar(value="A3")
+        self._paper_var = tk.StringVar(value="custom_736x574")
         paper_combo = ttk.Combobox(bar, textvariable=self._paper_var,
-                                    values=["A2", "A3"], state="readonly",
-                                    width=5)
+                                    values=["custom_736x574"], state="readonly",
+                                    width=14)
         paper_combo.pack(side=tk.LEFT, padx=2)
 
         # 格式选择
@@ -223,7 +218,7 @@ class MainWindow(tk.Tk):
         )
         self._set_status(
             f"已选: {total_methods} 条做法, {total_layers} 构造层 | "
-            f"图幅: {self._paper_var.get()} | "
+            f"图幅: 736×574mm | "
             f"格式: {self._fmt_var.get().upper()} | "
             f"输出: {self._out_dir_var.get()}"
         )
@@ -231,7 +226,7 @@ class MainWindow(tk.Tk):
     # ================ 生成图纸 ================
 
     def _on_generate(self):
-        """一键生成全部表格图纸。"""
+        """一键生成建筑构造做法表图纸。"""
         selections = self._selection.get_all_selections()
         if self._selection.is_empty():
             messagebox.showwarning("提示", "请先选择至少一条做法")
@@ -243,48 +238,29 @@ class MainWindow(tk.Tk):
             if not self._project.project_name:
                 return
 
-        # 确定输出参数
-        paper_size = self._paper_var.get()
         fmt = self._fmt_var.get()
         out_dir = self._out_dir_var.get()
         os.makedirs(out_dir, exist_ok=True)
 
-        # 生成三张表
-        tables = [
-            self._table_builder.build_method_table(selections),
-            self._table_builder.build_decoration_summary(selections),
-            self._table_builder.build_interior_decoration(selections),
-        ]
+        # 生成统一的构造做法表
+        table_data = self._table_builder.build_method_table(selections)
 
-        # 图名后缀
-        table_names = ["构造做法表", "建筑装修一览表", "室内装修一览表"]
+        fname = f"{self._project.project_name}_构造做法表"
 
-        files_generated = []
         try:
-            for i, (tdata, tname) in enumerate(zip(tables, table_names)):
-                # 为每张表设定图纸名称
-                self._project.drawing_name = tname
-                fname = f"{self._project.project_name}_{tname}"
+            if fmt == "dxf":
+                exporter = DXFExporter(self._settings, self._table_styles)
+                out_path = os.path.join(out_dir, f"{fname}.dxf")
+                result = exporter.export(table_data, self._project, out_path)
+            else:
+                exporter = PDFExporter(self._settings, self._table_styles)
+                out_path = os.path.join(out_dir, f"{fname}.pdf")
+                result = exporter.export(table_data, self._project, out_path)
 
-                if fmt == "dxf":
-                    exporter = DXFExporter(self._settings, self._tb_config)
-                    out_path = os.path.join(out_dir, f"{fname}.dxf")
-                    result = exporter.export(
-                        tdata, self._project, paper_size, out_path)
-                    files_generated.append(result)
-                else:
-                    exporter = PDFExporter(self._settings, self._tb_config)
-                    out_path = os.path.join(out_dir, f"{fname}.pdf")
-                    result = exporter.export(
-                        tdata, self._project, paper_size, out_path)
-                    files_generated.append(result)
-
-            self._set_status(f"生成完成! 共 {len(files_generated)} 个文件")
+            self._set_status(f"生成完成! {result}")
             messagebox.showinfo(
                 "生成成功",
-                f"已生成 {len(files_generated)} 张图纸:\n\n" +
-                "\n".join(f"  • {f}" for f in files_generated) +
-                f"\n\n保存在: {out_dir}"
+                f"已生成图纸:\n\n  • {result}\n\n保存在: {out_dir}"
             )
 
         except Exception as e:
