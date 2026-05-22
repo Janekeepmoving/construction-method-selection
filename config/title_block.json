@@ -1,0 +1,78 @@
+{
+  "A2": {
+    "paper_width": 594,
+    "paper_height": 420,
+    "binding_margin": 25,
+    "margin_left": 30,
+    "margin_right": 10,
+    "margin_top": 10,
+    "margin_bottom": 10,
+    "title_block": {
+      "x_offset": 414,
+      "y_offset": 10,
+      "width": 180,
+      "height": 40,
+      "rows": [
+        {"name": "设计号", "height": 8, "cols": [{"label": "", "width": 45}, {"label": "设计号", "width": 45}]},
+        {"name": "图别", "height": 8, "cols": [{"label": "", "width": 45}, {"label": "图别", "width": 45}]},
+        {"name": "日期", "height": 8, "cols": [{"label": "", "width": 45}, {"label": "日期", "width": 45}]},
+        {"name": "设计人", "height": 8, "cols": [{"label": "", "width": 45}, {"label": "设计人", "width": 45}]}
+      ]
+    },
+    "title_strip": {
+      "y_offset": 50,
+      "height": 15,
+      "width": 180,
+      "x_offset": 414
+    },
+    "info_area": {
+      "x": 30,
+      "y_top": 380,
+      "width": 534,
+      "height": 30,
+      "fields": [
+        {"label": "项目名称", "x": 30, "width": 250},
+        {"label": "图纸名称", "x": 280, "width": 200},
+        {"label": "图号", "x": 480, "width": 84}
+      ]
+    }
+  },
+  "A3": {
+    "paper_width": 420,
+    "paper_height": 297,
+    "binding_margin": 25,
+    "margin_left": 30,
+    "margin_right": 10,
+    "margin_top": 10,
+    "margin_bottom": 10,
+    "title_block": {
+      "x_offset": 240,
+      "y_offset": 10,
+      "width": 180,
+      "height": 40,
+      "rows": [
+        {"name": "设计号", "height": 8, "cols": [{"label": "", "width": 45}, {"label": "设计号", "width": 45}]},
+        {"name": "图别", "height": 8, "cols": [{"label": "", "width": 45}, {"label": "图别", "width": 45}]},
+        {"name": "日期", "height": 8, "cols": [{"label": "", "width": 45}, {"label": "日期", "width": 45}]},
+        {"name": "设计人", "height": 8, "cols": [{"label": "", "width": 45}, {"label": "设计人", "width": 45}]}
+      ]
+    },
+    "title_strip": {
+      "y_offset": 50,
+      "height": 15,
+      "width": 180,
+      "x_offset": 240
+    },
+    "info_area": {
+      "x": 30,
+      "y_top": 260,
+      "width": 360,
+      "height": 27,
+      "fields": [
+        {"label": "项目名称", "x": 30, "width": 150},
+        {"label": "图纸名称", "x": 180, "width": 120},
+        {"label": "图号", "x": 300, "width": 90}
+      ]
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "table_types": {
+    "构造做法表": {
+      "name": "构造做法表",
+      "columns": [
+        {"header": "编号", "width": 15},
+        {"header": "做法名称", "width": 30},
+        {"header": "构造层次", "width": 15},
+        {"header": "材料及做法", "width": 50},
+        {"header": "厚度(mm)", "width": 15},
+        {"header": "备注", "width": 30}
+      ]
+    },
+    "建筑装修一览表": {
+      "name": "建筑装修一览表",
+      "columns": [
+        {"header": "楼层/区域", "width": 20},
+        {"header": "房间名称", "width": 20},
+        {"header": "楼地面做法", "width": 25},
+        {"header": "墙面做法", "width": 25},
+        {"header": "顶棚做法", "width": 25},
+        {"header": "备注", "width": 20}
+      ]
+    },
+    "室内装修一览表": {
+      "name": "室内装修一览表",
+      "columns": [
+        {"header": "楼层", "width": 12},
+        {"header": "房间编号", "width": 15},
+        {"header": "房间名称", "width": 18},
+        {"header": "地面做法", "width": 25},
+        {"header": "墙面做法", "width": 25},
+        {"header": "天花做法", "width": 25},
+        {"header": "面积(m²)", "width": 12},
+        {"header": "备注", "width": 18}
+      ]
+    }
+  },
+  "cell_padding": {
+    "horizontal": 1.5,
+    "vertical": 1.0
+  },
+  "header_height": 10,
+  "row_height": 8,
+  "title_height": 15
+}

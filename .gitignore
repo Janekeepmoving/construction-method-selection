@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# 虚拟环境
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 输出文件（每次生成都会重新产生）
+output_files/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 敏感配置（如果有）
+*.env
