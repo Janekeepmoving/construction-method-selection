@@ -29,17 +29,17 @@
   },
   "fonts": {
     "title": {
-      "name": "仿宋_GB2312",
+      "name": "HzTXT",
       "size": 5.0,
       "width_factor": 0.7
     },
     "header": {
-      "name": "仿宋_GB2312",
+      "name": "HzTXT",
       "size": 3.5,
       "width_factor": 0.7
     },
     "body": {
-      "name": "仿宋_GB2312",
+      "name": "HzTXT",
       "size": 3.0,
       "width_factor": 0.7
     }
